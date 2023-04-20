@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shop.Models;
+using Shop.Services.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,84 +10,52 @@ namespace Shop.Controllers
 	[ApiController]
 	public class ProductsController : ControllerBase
 	{
-		private List<Product> products;
+		private readonly IProductService productService;
 
-		public ProductsController()
+		public ProductsController(IProductService productService)
 		{
-			products = new List<Product> {
-				new Product
-					{
-						Id = 1,
-						Name = "Product1",
-						Type = Enums.ProductTypeEnum.Telefon,
-						Description = "Description1",
-						Price = 10
-					},
-				new Product
-					{
-						Id = 2,
-						Name = "Product2",
-						Type = Enums.ProductTypeEnum.Tableta,
-						Description = "Description2",
-						Price = 20
-					},
-				new Product
-					{
-						Id = 3,
-						Name = "Product3",
-						Type = Enums.ProductTypeEnum.Televizor,
-						Description = "Description3",
-						Price = 30
-					},
-			};
+			this.productService = productService;
 		}
 
 		[HttpGet]
-		public ActionResult Get()
+		public async Task<ActionResult> GetAllProducts()
 		{
+			var products = await productService.GetProducts();
 			return Ok(products);
 		}
 
 		[HttpGet("{id}")]
-		public ActionResult Get(int id)
+		public async Task<ActionResult> GetProductById(int id)
 		{
-			var product = products.FirstOrDefault(e => e.Id == id);
+			var product = await productService.GetProductById(id);
 			return product != null ? Ok(product) : NotFound();
 		}
 
 		[HttpPost]
-		public ActionResult Post([FromBody] Product product)
+		public async Task<ActionResult> AddProduct([FromBody] Product newProduct)
 		{
-			products.Add(product);
+			var product = await productService.AddProduct(newProduct);
 			return Ok(product);
 		}
 
 		[HttpPut("{id}")]
-		public ActionResult Put(int id, [FromBody] decimal value)
+		public async Task<ActionResult> UpdateProduct(int id, [FromBody] Product newProduct)
 		{
-			var product = products.FirstOrDefault(e => e.Id == id);
+			var product = await productService.UpdateProduct(id, newProduct);
 
 			if (product == null)
 			{
 				return NotFound();
 			}
 
-			product.Price = value;
 			return Ok(product);
 		}
 
 		[HttpDelete("{id}")]
-		public ActionResult Delete(int id)
+		public async Task<ActionResult> Delete(int id)
 		{
-			var product = products.FirstOrDefault(e => e.Id == id);
-
-			if (product == null)
-			{
-				return NotFound();
-			}
-
-			products.Remove(product);
-			return Ok("Product Deleted!");
+			var response = await productService.DeleteProduct(id);
+			return response ? Ok("Product Deleted!") : NotFound();
 		}
 	}
 }

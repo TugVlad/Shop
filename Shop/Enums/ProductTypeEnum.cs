@@ -3,9 +3,9 @@
 	public enum ProductTypeEnum
 	{
 		Laptop,
-		Tableta,
-		Telefon,
-		Televizor,
-		Periferice
+		Tablet,
+		Phone,
+		TV,
+		Peripherals
 	}
 }
