@@ -23,7 +23,7 @@ namespace Shop.Services.Implementation
 
 		public async Task<bool> DeleteProduct(int productId)
 		{
-			var product = await context.Products.SingleOrDefaultAsync(e => e.Id == productId);
+			var product = await context.Products.FirstOrDefaultAsync(e => e.Id == productId);
 
 			if (product == null)
 			{
