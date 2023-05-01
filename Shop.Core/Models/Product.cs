@@ -9,7 +9,7 @@ namespace Shop.Models
 		public int Id { get; set; }
 
 		[Required]
-		[Column(TypeName = "varchar(250)")]
+		[Column(TypeName = "varchar(251)")]
 		public string Name { get; set; }
 
 		[Column(TypeName = "varchar(500)")]

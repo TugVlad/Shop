@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Shop.Application.Repositories.Interfaces;
 using Shop.Data;
 using Shop.Models;
-using Shop.Services.Interfaces;
 
-namespace Shop.Services.Implementation
+namespace Shop.Infrastructure.Repositories.Implementations
 {
-	public class ProductService : IProductService
+	public class ProductRepository : IProductRepository
 	{
 		private readonly ShopContext context;
 
-		public ProductService(ShopContext shopContext)
+		public ProductRepository(ShopContext shopContext)
 		{
 			this.context = shopContext;
 		}
