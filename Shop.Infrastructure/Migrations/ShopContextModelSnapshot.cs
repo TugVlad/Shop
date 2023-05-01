@@ -7,7 +7,7 @@ using Shop.Data;
 
 #nullable disable
 
-namespace Shop.API.Migrations
+namespace Shop.Infrastructure.Migrations
 {
     [DbContext(typeof(ShopContext))]
     partial class ShopContextModelSnapshot : ModelSnapshot

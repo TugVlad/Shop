@@ -8,11 +8,11 @@ using Shop.Data;
 
 #nullable disable
 
-namespace Shop.API.Migrations
+namespace Shop.Infrastructure.Migrations
 {
     [DbContext(typeof(ShopContext))]
-    [Migration("20230501211025_Initial")]
-    partial class Initial
+    [Migration("20230501212213_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
