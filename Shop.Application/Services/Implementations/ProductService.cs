@@ -13,29 +13,29 @@ namespace Shop.Services.Implementation
             this.productRepository = productRepository;
         }
 
-		public async Task<Product> AddProduct(Product product)
+		public async Task<Product> AddProductAsync(Product product)
 		{
-			return await productRepository.AddProduct(product);
+			return await productRepository.AddProductAsync(product);
 		}
 
-		public async Task<bool> DeleteProduct(int productId)
+		public async Task<bool> DeleteProductAsync(int productId)
 		{
-			return await productRepository.DeleteProduct(productId);
+			return await productRepository.DeleteProductAsync(productId);
 		}
 
-		public async Task<Product> GetProductById(int productId)
+		public async Task<Product> GetProductByIdAsync(int productId)
 		{
-			return await productRepository.GetProductById(productId);
+			return await productRepository.GetProductByIdAsync(productId);
 		}
 
-		public async Task<List<Product>> GetProducts()
+		public async Task<List<Product>> GetProductsAsync()
 		{
-			return await productRepository.GetProducts();
+			return await productRepository.GetProductsAsync();
 		}
 
-		public async Task<Product> UpdateProduct(int productId, Product product)
+		public async Task<Product> UpdateProductAsync(int productId, Product product)
 		{
-			return await productRepository.UpdateProduct(productId, product);
+			return await productRepository.UpdateProductAsync(productId, product);
 		}
 	}
 }

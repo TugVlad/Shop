@@ -18,28 +18,28 @@ namespace Shop.API.Controllers
 		[HttpGet]
 		public async Task<ActionResult> GetAllProducts()
 		{
-			var products = await productService.GetProducts();
+			var products = await productService.GetProductsAsync();
 			return Ok(products);
 		}
 
 		[HttpGet("{id}")]
 		public async Task<ActionResult> GetProductById(int id)
 		{
-			var product = await productService.GetProductById(id);
+			var product = await productService.GetProductByIdAsync(id);
 			return product != null ? Ok(product) : NotFound();
 		}
 
 		[HttpPost]
 		public async Task<ActionResult> AddProduct([FromBody] Product newProduct)
 		{
-			var product = await productService.AddProduct(newProduct);
+			var product = await productService.AddProductAsync(newProduct);
 			return Ok(product);
 		}
 
 		[HttpPut("{id}")]
 		public async Task<ActionResult> UpdateProduct(int id, [FromBody] Product newProduct)
 		{
-			var product = await productService.UpdateProduct(id, newProduct);
+			var product = await productService.UpdateProductAsync(id, newProduct);
 
 			if (product == null)
 			{
@@ -52,7 +52,7 @@ namespace Shop.API.Controllers
 		[HttpDelete("{id}")]
 		public async Task<ActionResult> Delete(int id)
 		{
-			var response = await productService.DeleteProduct(id);
+			var response = await productService.DeleteProductAsync(id);
 			return response ? Ok("Product Deleted!") : NotFound();
 		}
 	}

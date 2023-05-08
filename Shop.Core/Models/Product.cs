@@ -19,8 +19,16 @@ namespace Shop.Models
 		[Column(TypeName = "nvarchar(50)")]
 		public ProductTypeEnum Type { get; set; }
 
-		[Column(TypeName= "decimal(5, 2)")]
+		[Column(TypeName = "decimal(5, 2)")]
 		public decimal Price { get; set; }
+
+		public void UpdateProduct(Product product)
+		{
+			Name = product.Name;
+			Description = product.Description;
+			Price = product.Price;
+			Type = product.Type;
+		}
 
 	}
 }

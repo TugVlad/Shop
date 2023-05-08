@@ -14,14 +14,14 @@ namespace Shop.Infrastructure.Repositories.Implementations
 			this.context = shopContext;
 		}
 
-		public async Task<Product> AddProduct(Product product)
+		public async Task<Product> AddProductAsync(Product product)
 		{
 			await context.Products.AddAsync(product);
-			await SaveChanges();
+			await SaveChangesAsync();
 			return product;
 		}
 
-		public async Task<bool> DeleteProduct(int productId)
+		public async Task<bool> DeleteProductAsync(int productId)
 		{
 			var product = await context.Products.FirstOrDefaultAsync(e => e.Id == productId);
 
@@ -31,23 +31,23 @@ namespace Shop.Infrastructure.Repositories.Implementations
 			}
 
 			context.Products.Remove(product);
-			await SaveChanges();
+			await SaveChangesAsync();
 
 			return true;
 
 		}
 
-		public async Task<Product> GetProductById(int productId)
+		public async Task<Product> GetProductByIdAsync(int productId)
 		{
 			return await context.Products.FirstOrDefaultAsync(e => e.Id == productId);
 		}
 
-		public async Task<List<Product>> GetProducts()
+		public async Task<List<Product>> GetProductsAsync()
 		{
 			return await context.Products.ToListAsync();
 		}
 
-		public async Task<Product> UpdateProduct(int productId, Product product)
+		public async Task<Product> UpdateProductAsync(int productId, Product product)
 		{
 			var existingProduct = await context.Products.FirstOrDefaultAsync(e => e.Id == productId);
 
@@ -57,16 +57,13 @@ namespace Shop.Infrastructure.Repositories.Implementations
 			}
 
 			context.Update(existingProduct);
-			existingProduct.Name = product.Name;
-			existingProduct.Price = product.Price;
-			existingProduct.Description = product.Description;
-			existingProduct.Type = product.Type;
-			await SaveChanges();
+			existingProduct.UpdateProduct(product);
+			await SaveChangesAsync();
 
 			return existingProduct;
 		}
 
-		public async Task SaveChanges()
+		public async Task SaveChangesAsync()
 		{
 			context.SaveChangesAsync();
 		}
