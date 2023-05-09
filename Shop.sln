@@ -9,7 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop.Application", "Shop.Ap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop.Infrastructure", "Shop.Infrastructure\Shop.Infrastructure.csproj", "{EF2CFBDD-04E9-488E-969E-FC204C2BDAD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.API", "Shop.API\Shop.API.csproj", "{B5BDAC97-5BDA-482B-811A-26D960A87EE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop.API", "Shop.API\Shop.API.csproj", "{B5BDAC97-5BDA-482B-811A-26D960A87EE5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B4A33B01-BBDB-45A2-8D7E-9A327CFCC43C} = {B4A33B01-BBDB-45A2-8D7E-9A327CFCC43C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
