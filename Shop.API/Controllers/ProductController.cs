@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shop.Models;
+using Shop.Core.Models;
 using Shop.Services.Interfaces;
 
 namespace Shop.API.Controllers
@@ -19,6 +19,14 @@ namespace Shop.API.Controllers
 		public async Task<ActionResult> GetAllProducts()
 		{
 			var products = await productService.GetProductsAsync();
+			return Ok(products);
+		}
+
+		[HttpGet]
+		[Route("productsWithReviews")]
+		public async Task<ActionResult> GetAllProductsWithReviews()
+		{
+			var products = await productService.GetProductsWithReviewsAsync();
 			return Ok(products);
 		}
 

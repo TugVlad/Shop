@@ -1,5 +1,5 @@
 ﻿using Shop.Application.Repositories.Interfaces;
-using Shop.Models;
+using Shop.Core.Models;
 using Shop.Services.Interfaces;
 
 namespace Shop.Services.Implementation
@@ -31,6 +31,11 @@ namespace Shop.Services.Implementation
 		public async Task<List<Product>> GetProductsAsync()
 		{
 			return await productRepository.GetProductsAsync();
+		}
+
+		public async Task<List<Product>> GetProductsWithReviewsAsync()
+		{
+			return await productRepository.GetProductsWithReviewsAsync();
 		}
 
 		public async Task<Product> UpdateProductAsync(int productId, Product product)

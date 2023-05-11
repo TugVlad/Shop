@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shop.Application.Repositories.Interfaces;
+using Shop.Core.Models;
 using Shop.Data;
-using Shop.Models;
 
 namespace Shop.Infrastructure.Repositories.Implementations
 {
@@ -45,6 +45,11 @@ namespace Shop.Infrastructure.Repositories.Implementations
 		public async Task<List<Product>> GetProductsAsync()
 		{
 			return await context.Products.ToListAsync();
+		}
+
+		public async Task<List<Product>> GetProductsWithReviewsAsync()
+		{
+			return await context.Products.Include(e => e.Reviews).ToListAsync();
 		}
 
 		public async Task<Product> UpdateProductAsync(int productId, Product product)

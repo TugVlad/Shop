@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Shop.Models
+namespace Shop.Core.Models
 {
 	public class Product
 	{
@@ -21,6 +21,10 @@ namespace Shop.Models
 
 		[Column(TypeName = "decimal(5, 2)")]
 		public decimal Price { get; private set; }
+
+		public int Quantity { get; private set; }
+
+		public List<Review> Reviews { get; private set; }
 
 		public void UpdateProduct(Product product)
 		{
