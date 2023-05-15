@@ -1,4 +1,5 @@
-﻿using Shop.Enums;
+﻿using Shop.Core.ViewModels;
+using Shop.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -6,7 +7,7 @@ namespace Shop.Core.Models
 {
 	public class Product
 	{
-		public int Id { get; private set; }
+        public int Id { get; private set; }
 
 		[Required]
 		[Column(TypeName = "varchar(251)")]
@@ -25,6 +26,22 @@ namespace Shop.Core.Models
 		public int Quantity { get; private set; }
 
 		public List<Review> Reviews { get; private set; }
+
+		public List<Company> Companies { get; private set; }
+
+		public Product()
+		{
+
+		}
+
+		public Product(ProductViewModel product)
+		{
+			Name = product.Name;
+			Description = product.Description;
+			Type = product.Type;
+			Price = product.Price;
+			Quantity = product.Quantity;
+		}
 
 		public void UpdateProduct(Product product)
 		{

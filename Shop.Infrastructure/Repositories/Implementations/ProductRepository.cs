@@ -11,13 +11,28 @@ namespace Shop.Infrastructure.Repositories.Implementations
 
 		public ProductRepository(ShopContext shopContext)
 		{
-			this.context = shopContext;
+			context = shopContext;
 		}
 
 		public async Task<Product> AddProductAsync(Product product)
 		{
 			await context.Products.AddAsync(product);
 			await SaveChangesAsync();
+			return product;
+		}
+		public async Task<Product> AddProductReviewAsync(Product product, Review review)
+		{
+			product.Reviews.Add(review);
+			await SaveChangesAsync();
+
+			return product;
+		}
+
+		public async Task<Product> AddProductCompanyAsync(Product product, Company company)
+		{
+			product.Companies.Add(company);
+			await SaveChangesAsync();
+
 			return product;
 		}
 
@@ -40,6 +55,14 @@ namespace Shop.Infrastructure.Repositories.Implementations
 		public async Task<Product> GetProductByIdAsync(int productId)
 		{
 			return await context.Products.FirstOrDefaultAsync(e => e.Id == productId);
+		}
+
+		public async Task<Product> GetProductWithDependenciesByIdAsync(int productId)
+		{
+			return await context.Products
+				.Include(e => e.Reviews)
+				.Include(e => e.Companies)
+				.FirstOrDefaultAsync(e => e.Id == productId);
 		}
 
 		public async Task<List<Product>> GetProductsAsync()
@@ -70,7 +93,8 @@ namespace Shop.Infrastructure.Repositories.Implementations
 
 		public async Task SaveChangesAsync()
 		{
-			context.SaveChangesAsync();
+			await context.SaveChangesAsync();
 		}
+
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Shop.Application.Services.Interfaces;
 using Shop.Core.Models;
-using Shop.Services.Interfaces;
+using Shop.Core.ViewModels;
 
 namespace Shop.API.Controllers
 {
@@ -38,9 +39,25 @@ namespace Shop.API.Controllers
 		}
 
 		[HttpPost]
-		public async Task<ActionResult> AddProduct([FromBody] Product newProduct)
+		public async Task<ActionResult> AddProduct([FromBody] ProductViewModel newProduct)
 		{
 			var product = await productService.AddProductAsync(newProduct);
+			return Ok(product);
+		}
+
+		[HttpPost]
+		[Route("addReview")]
+		public async Task<ActionResult> AddProductReview([FromBody] ProductReviewViewModel request)
+		{
+			var product = await productService.AddProductReviewAsync(request.ProductId, request.ReviewMessage);
+			return Ok(product);
+		}
+
+		[HttpPost]
+		[Route("addCompany")]
+		public async Task<ActionResult> AddProductCompany([FromBody] ProductCompanyViewModel request)
+		{
+			var product = await productService.AddProductCompanyAsync(request.ProductId, request.CompanyId);
 			return Ok(product);
 		}
 

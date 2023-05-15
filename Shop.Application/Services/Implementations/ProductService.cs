@@ -1,21 +1,57 @@
 ﻿using Shop.Application.Repositories.Interfaces;
+using Shop.Application.Services.Interfaces;
 using Shop.Core.Models;
-using Shop.Services.Interfaces;
+using Shop.Core.ViewModels;
 
-namespace Shop.Services.Implementation
+namespace Shop.Application.Services.Implementations
 {
 	public class ProductService : IProductService
 	{
-        private readonly IProductRepository productRepository;
+		private readonly IProductRepository productRepository;
+		private readonly ICompanyRepository companyRepository;
 
-        public ProductService(IProductRepository productRepository)
-        {
-            this.productRepository = productRepository;
-        }
-
-		public async Task<Product> AddProductAsync(Product product)
+		public ProductService(IProductRepository productRepository, ICompanyRepository companyRepository)
 		{
-			return await productRepository.AddProductAsync(product);
+			this.productRepository = productRepository;
+			this.companyRepository = companyRepository;
+		}
+
+		public async Task<Product> AddProductAsync(ProductViewModel product)
+		{
+			return await productRepository.AddProductAsync(new Product(product));
+		}
+
+		public async Task<Product> AddProductReviewAsync(int productId, string reviewMessage)
+		{
+			var product = await productRepository.GetProductWithDependenciesByIdAsync(productId);
+
+			if (product == null)
+			{
+				return null;
+			}
+
+			var review = new Review("title", reviewMessage, 5, product);
+
+			return await productRepository.AddProductReviewAsync(product, review);
+		}
+
+		public async Task<Product> AddProductCompanyAsync(int productId, int companyId)
+		{
+			var product = await productRepository.GetProductWithDependenciesByIdAsync(productId);
+
+			if (product == null)
+			{
+				return null;
+			}
+
+			var company = await companyRepository.GetCompanyByIdAsync(companyId);
+
+			if (company == null || product.Companies.FirstOrDefault(e => e.Id == company.Id) != null)
+			{
+				return product;
+			}
+
+			return await productRepository.AddProductCompanyAsync(product, company);
 		}
 
 		public async Task<bool> DeleteProductAsync(int productId)

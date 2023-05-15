@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Shop.Application.Repositories.Interfaces;
+using Shop.Application.Services.Implementations;
+using Shop.Application.Services.Interfaces;
 using Shop.Data;
 using Shop.Infrastructure.Repositories.Implementations;
-using Shop.Services.Implementation;
-using Shop.Services.Interfaces;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +22,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ICompanyService, CompanyService>();
+builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 
 var app = builder.Build();
 
