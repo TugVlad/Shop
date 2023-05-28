@@ -1,27 +1,26 @@
 ﻿using Shop.Application.Repositories.Interfaces;
 using Shop.Application.Services.Interfaces;
 using Shop.Core.Models;
-using Shop.Core.ViewModels;
 
 namespace Shop.Application.Services.Implementations
 {
 	public class CompanyService : ICompanyService
 	{
-		private readonly ICompanyRepository companyRepository;
+		private readonly ICompanyRepository _companyRepository;
 
 		public CompanyService(ICompanyRepository companyRepository)
 		{
-			this.companyRepository = companyRepository;
+			_companyRepository = companyRepository;
 		}
 
-		public async Task<Company> AddCompanyAsync(CompanyViewModel company)
+		public async Task<Company> AddCompanyAsync(Company company)
 		{
-			return await companyRepository.AddCompanyAsync(new Company(company));
+			return await _companyRepository.AddCompanyAsync(company);
 		}
 
 		public async Task<Company> AddCompanyReviewAsync(int companyId, string reviewMessage)
 		{
-			var company = await companyRepository.GetCompanyReviewsByIdAsync(companyId);
+			var company = await _companyRepository.GetCompanyReviewsByIdAsync(companyId);
 
 			if (company == null)
 			{
@@ -30,27 +29,27 @@ namespace Shop.Application.Services.Implementations
 
 			var review = new Review("title", reviewMessage, 5, company);
 
-			return await companyRepository.AddCompanyReviewAsync(company,review);
+			return await _companyRepository.AddCompanyReviewAsync(company,review);
 		}
 
 		public async Task<bool> DeleteCompanyAsync(int companyId)
 		{
-			return await companyRepository.DeleteCompanyAsync(companyId);
+			return await _companyRepository.DeleteCompanyAsync(companyId);
 		}
 
 		public async Task<List<Company>> GetAllCompaniesAsync()
 		{
-			return await companyRepository.GetAllCompaniesAsync();
+			return await _companyRepository.GetAllCompaniesAsync();
 		}
 
 		public async Task<List<Company>> GetAllCompaniesWithReviewsAsync()
 		{
-			return await companyRepository.GetAllCompaniesWithReviewsAsync();
+			return await _companyRepository.GetAllCompaniesWithReviewsAsync();
 		}
 
 		public async Task<Company> GetCompanyByIdAsync(int companyId)
 		{
-			return await companyRepository.GetCompanyByIdAsync(companyId);
+			return await _companyRepository.GetCompanyByIdAsync(companyId);
 		}
 	}
 }

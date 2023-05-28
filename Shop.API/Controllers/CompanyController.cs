@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Shop.Application.Services.Implementations;
+using Shop.API.ViewModels;
 using Shop.Application.Services.Interfaces;
 using Shop.Core.Models;
-using Shop.Core.ViewModels;
 
 namespace Shop.API.Controllers
 {
@@ -11,17 +10,19 @@ namespace Shop.API.Controllers
 	[ApiController]
 	public class CompanyController : ControllerBase
 	{
-		private readonly ICompanyService companyService;
+		private readonly ICompanyService _companyService;
+		private readonly IMapper _mapper;
 
-        public CompanyController(ICompanyService companyService)
+        public CompanyController(IMapper mapper, ICompanyService companyService)
         {
-            this.companyService = companyService;
+			_mapper = mapper;
+            _companyService = companyService;
         }
 
 		[HttpGet]
 		public async Task<ActionResult> GetAllCompanies()
 		{
-			var companies = await companyService.GetAllCompaniesAsync();
+			var companies = await _companyService.GetAllCompaniesAsync();
 			return Ok(companies);
 		}
 
@@ -29,21 +30,21 @@ namespace Shop.API.Controllers
 		[Route("companyWithReviews")]
 		public async Task<ActionResult> GetAllCompaniesWithReviews()
 		{
-			var companies = await companyService.GetAllCompaniesWithReviewsAsync();
+			var companies = await _companyService.GetAllCompaniesWithReviewsAsync();
 			return Ok(companies);
 		}
 
 		[HttpGet("{id}")]
 		public async Task<ActionResult> GetCompanyById(int id)
 		{
-			var company = await companyService.GetCompanyByIdAsync(id);
+			var company = await _companyService.GetCompanyByIdAsync(id);
 			return company != null ? Ok(company) : NotFound();
 		}
 
 		[HttpPost]
 		public async Task<ActionResult> AddCompany([FromBody] CompanyViewModel newCompany)
 		{
-			var company = await companyService.AddCompanyAsync(newCompany);
+			var company = await _companyService.AddCompanyAsync(_mapper.Map<Company>(newCompany));
 			return Ok(company);
 		}
 
@@ -51,14 +52,14 @@ namespace Shop.API.Controllers
 		[Route("addReview")]
 		public async Task<ActionResult> AddCompanyReview([FromBody] CompanyReviewViewModel request)
 		{
-			var product = await companyService.AddCompanyReviewAsync(request.CompanyId, request.ReviewMessage);
+			var product = await _companyService.AddCompanyReviewAsync(request.CompanyId, request.ReviewMessage);
 			return Ok(product);
 		}
 
 		[HttpDelete("{id}")]
 		public async Task<ActionResult> DeleteCompany(int id)
 		{
-			var response = await companyService.DeleteCompanyAsync(id);
+			var response = await _companyService.DeleteCompanyAsync(id);
 			return response ? Ok("Company Deleted!") : NotFound();
 		}
 	}

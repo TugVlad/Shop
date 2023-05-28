@@ -1,5 +1,4 @@
-﻿using Shop.Core.ViewModels;
-using Shop.Enums;
+﻿using Shop.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,20 +6,19 @@ namespace Shop.Core.Models
 {
 	public class Product
 	{
-        public int Id { get; private set; }
+		public Product()
+		{
 
-		[Required]
-		[Column(TypeName = "varchar(251)")]
+		}
+
+		public int Id { get; private set; }
+
 		public string Name { get; private set; }
 
-		[Column(TypeName = "varchar(500)")]
 		public string Description { get; private set; }
 
-		[Required]
-		[Column(TypeName = "nvarchar(50)")]
 		public ProductTypeEnum Type { get; private set; }
 
-		[Column(TypeName = "decimal(5, 2)")]
 		public decimal Price { get; private set; }
 
 		public int Quantity { get; private set; }
@@ -29,27 +27,39 @@ namespace Shop.Core.Models
 
 		public List<Company> Companies { get; private set; }
 
-		public Product()
+		public void UpdateName(string name)
 		{
-
+			Name = name;
 		}
 
-		public Product(ProductViewModel product)
+		public void UpdateDescription(string description)
 		{
-			Name = product.Name;
-			Description = product.Description;
-			Type = product.Type;
-			Price = product.Price;
-			Quantity = product.Quantity;
+			Description	= description;
 		}
 
-		public void UpdateProduct(Product product)
+		public void UpdateType(ProductTypeEnum type)
 		{
-			Name = product.Name;
-			Description = product.Description;
-			Price = product.Price;
-			Type = product.Type;
+			Type = type;
 		}
 
+		public void UpdatePrice(decimal price)
+		{
+			Price = price;
+		}
+
+		public void UpdateQuantity(int quantity)
+		{
+			Quantity = quantity;
+		}
+
+		public void IncreaseQuantity(int quantity)
+		{
+			Quantity += quantity;
+		}
+
+		public void DecreaseQuantity(int quantity)
+		{
+			Quantity -= quantity;
+		}
 	}
 }

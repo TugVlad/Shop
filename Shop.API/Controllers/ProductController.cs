@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Shop.API.ViewModels;
 using Shop.Application.Services.Interfaces;
 using Shop.Core.Models;
-using Shop.Core.ViewModels;
 
 namespace Shop.API.Controllers
 {
@@ -9,17 +10,19 @@ namespace Shop.API.Controllers
 	[ApiController]
 	public class ProductsController : ControllerBase
 	{
-		private readonly IProductService productService;
+		private readonly IMapper _mapper;
+		private readonly IProductService _productService;
 
-		public ProductsController(IProductService productService)
+		public ProductsController(IMapper mapper, IProductService productService)
 		{
-			this.productService = productService;
+			_mapper = mapper;
+			_productService = productService;
 		}
 
 		[HttpGet]
 		public async Task<ActionResult> GetAllProducts()
 		{
-			var products = await productService.GetProductsAsync();
+			var products = await _productService.GetProductsAsync();
 			return Ok(products);
 		}
 
@@ -27,21 +30,21 @@ namespace Shop.API.Controllers
 		[Route("productsWithReviews")]
 		public async Task<ActionResult> GetAllProductsWithReviews()
 		{
-			var products = await productService.GetProductsWithReviewsAsync();
+			var products = await _productService.GetProductsWithReviewsAsync();
 			return Ok(products);
 		}
 
 		[HttpGet("{id}")]
 		public async Task<ActionResult> GetProductById(int id)
 		{
-			var product = await productService.GetProductByIdAsync(id);
+			var product = await _productService.GetProductByIdAsync(id);
 			return product != null ? Ok(product) : NotFound();
 		}
 
 		[HttpPost]
 		public async Task<ActionResult> AddProduct([FromBody] ProductViewModel newProduct)
 		{
-			var product = await productService.AddProductAsync(newProduct);
+			var product = await _productService.AddProductAsync(_mapper.Map<Product>(newProduct));
 			return Ok(product);
 		}
 
@@ -49,7 +52,7 @@ namespace Shop.API.Controllers
 		[Route("addReview")]
 		public async Task<ActionResult> AddProductReview([FromBody] ProductReviewViewModel request)
 		{
-			var product = await productService.AddProductReviewAsync(request.ProductId, request.ReviewMessage);
+			var product = await _productService.AddProductReviewAsync(request.ProductId, request.ReviewMessage);
 			return Ok(product);
 		}
 
@@ -57,14 +60,14 @@ namespace Shop.API.Controllers
 		[Route("addCompany")]
 		public async Task<ActionResult> AddProductCompany([FromBody] ProductCompanyViewModel request)
 		{
-			var product = await productService.AddProductCompanyAsync(request.ProductId, request.CompanyId);
+			var product = await _productService.AddProductCompanyAsync(request.ProductId, request.CompanyId);
 			return Ok(product);
 		}
 
 		[HttpPut("{id}")]
-		public async Task<ActionResult> UpdateProduct(int id, [FromBody] Product newProduct)
+		public async Task<ActionResult> UpdateProduct(int id, [FromBody] ProductViewModel newProduct)
 		{
-			var product = await productService.UpdateProductAsync(id, newProduct);
+			var product = await _productService.UpdateProductAsync(id, _mapper.Map<Product>(newProduct));
 
 			if (product == null)
 			{
@@ -77,7 +80,7 @@ namespace Shop.API.Controllers
 		[HttpDelete("{id}")]
 		public async Task<ActionResult> Delete(int id)
 		{
-			var response = await productService.DeleteProductAsync(id);
+			var response = await _productService.DeleteProductAsync(id);
 			return response ? Ok("Product Deleted!") : NotFound();
 		}
 	}

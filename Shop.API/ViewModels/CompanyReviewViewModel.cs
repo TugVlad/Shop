@@ -1,4 +1,4 @@
-﻿namespace Shop.Core.ViewModels
+﻿namespace Shop.API.ViewModels
 {
 	public class CompanyReviewViewModel
 	{

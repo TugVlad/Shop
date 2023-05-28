@@ -12,16 +12,16 @@ namespace Shop.Infrastructure.Repositories.Implementations
 {
 	public class CompanyRepository : ICompanyRepository
 	{
-		private readonly ShopContext context;
+		private readonly ShopContext _context;
 
 		public CompanyRepository(ShopContext shopContext)
 		{
-			context = shopContext;
+			_context = shopContext;
 		}
 
 		public async Task<Company> AddCompanyAsync(Company company)
 		{
-			await context.Companies.AddAsync(company);
+			await _context.Companies.AddAsync(company);
 			await SaveChangesAsync();
 			return company;
 		}
@@ -36,44 +36,44 @@ namespace Shop.Infrastructure.Repositories.Implementations
 
 		public async Task<bool> DeleteCompanyAsync(int companyId)
 		{
-			var company = await context.Companies.FirstOrDefaultAsync(e => e.Id == companyId);
+			var company = await _context.Companies.FirstOrDefaultAsync(e => e.Id == companyId);
 
 			if (company == null)
 			{
 				return false;
 			}
 
-			context.Companies.Remove(company);
+			_context.Companies.Remove(company);
 			await SaveChangesAsync();
 
-			var test = context.Companies.ToList();
+			var test = _context.Companies.ToList();
 
 			return true;
 		}
 
 		public async Task<List<Company>> GetAllCompaniesAsync()
 		{
-			return await context.Companies.ToListAsync();
+			return await _context.Companies.ToListAsync();
 		}
 
 		public async Task<List<Company>> GetAllCompaniesWithReviewsAsync()
 		{
-			return await context.Companies.Include(e => e.Reviews).ToListAsync();
+			return await _context.Companies.Include(e => e.Reviews).ToListAsync();
 		}
 
 		public async Task<Company> GetCompanyByIdAsync(int companyId)
 		{
-			return await context.Companies.FirstOrDefaultAsync(e => e.Id == companyId);
+			return await _context.Companies.FirstOrDefaultAsync(e => e.Id == companyId);
 		}
 
 		public async Task<Company> GetCompanyReviewsByIdAsync(int companyId)
 		{
-			return await context.Companies.Include(e => e.Reviews).FirstOrDefaultAsync(e => e.Id == companyId);
+			return await _context.Companies.Include(e => e.Reviews).FirstOrDefaultAsync(e => e.Id == companyId);
 		}
 
 		public async Task SaveChangesAsync()
 		{
-			await context.SaveChangesAsync();
+			await _context.SaveChangesAsync();
 		}
 	}
 }
