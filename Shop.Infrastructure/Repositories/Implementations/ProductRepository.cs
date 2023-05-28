@@ -1,36 +1,51 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shop.Application.Repositories.Interfaces;
+using Shop.Core.Models;
 using Shop.Data;
-using Shop.Models;
 
 namespace Shop.Infrastructure.Repositories.Implementations
 {
 	public class ProductRepository : IProductRepository
 	{
-		private readonly ShopContext context;
+		private readonly ShopContext _context;
 
 		public ProductRepository(ShopContext shopContext)
 		{
-			this.context = shopContext;
+			_context = shopContext;
 		}
 
 		public async Task<Product> AddProductAsync(Product product)
 		{
-			await context.Products.AddAsync(product);
+			await _context.Products.AddAsync(product);
 			await SaveChangesAsync();
+			return product;
+		}
+		public async Task<Product> AddProductReviewAsync(Product product, Review review)
+		{
+			product.Reviews.Add(review);
+			await SaveChangesAsync();
+
+			return product;
+		}
+
+		public async Task<Product> AddProductCompanyAsync(Product product, Company company)
+		{
+			product.Companies.Add(company);
+			await SaveChangesAsync();
+
 			return product;
 		}
 
 		public async Task<bool> DeleteProductAsync(int productId)
 		{
-			var product = await context.Products.FirstOrDefaultAsync(e => e.Id == productId);
+			var product = await _context.Products.FirstOrDefaultAsync(e => e.Id == productId);
 
 			if (product == null)
 			{
 				return false;
 			}
 
-			context.Products.Remove(product);
+			_context.Products.Remove(product);
 			await SaveChangesAsync();
 
 			return true;
@@ -39,25 +54,42 @@ namespace Shop.Infrastructure.Repositories.Implementations
 
 		public async Task<Product> GetProductByIdAsync(int productId)
 		{
-			return await context.Products.FirstOrDefaultAsync(e => e.Id == productId);
+			return await _context.Products.FirstOrDefaultAsync(e => e.Id == productId);
+		}
+
+		public async Task<Product> GetProductWithDependenciesByIdAsync(int productId)
+		{
+			return await _context.Products
+				.Include(e => e.Reviews)
+				.Include(e => e.Companies)
+				.FirstOrDefaultAsync(e => e.Id == productId);
 		}
 
 		public async Task<List<Product>> GetProductsAsync()
 		{
-			return await context.Products.ToListAsync();
+			return await _context.Products.ToListAsync();
+		}
+
+		public async Task<List<Product>> GetProductsWithReviewsAsync()
+		{
+			return await _context.Products.Include(e => e.Reviews).ToListAsync();
 		}
 
 		public async Task<Product> UpdateProductAsync(int productId, Product product)
 		{
-			var existingProduct = await context.Products.FirstOrDefaultAsync(e => e.Id == productId);
+			var existingProduct = await _context.Products.FirstOrDefaultAsync(e => e.Id == productId);
 
 			if (existingProduct == null)
 			{
 				return null;
 			}
 
-			context.Update(existingProduct);
-			existingProduct.UpdateProduct(product);
+			_context.Update(existingProduct);
+			existingProduct.UpdateName(product.Name);
+			existingProduct.UpdateDescription(product.Description);
+			existingProduct.UpdateType(product.Type);
+			existingProduct.UpdatePrice(product.Price);
+			existingProduct.UpdateQuantity(product.Quantity);
 			await SaveChangesAsync();
 
 			return existingProduct;
@@ -65,7 +97,8 @@ namespace Shop.Infrastructure.Repositories.Implementations
 
 		public async Task SaveChangesAsync()
 		{
-			context.SaveChangesAsync();
+			await _context.SaveChangesAsync();
 		}
+
 	}
 }
