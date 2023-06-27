@@ -2,11 +2,6 @@
 using Shop.Application.Repositories.Interfaces;
 using Shop.Core.Models;
 using Shop.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shop.Infrastructure.Repositories.Implementations
 {
@@ -28,7 +23,7 @@ namespace Shop.Infrastructure.Repositories.Implementations
 
 		public async Task<Company> AddCompanyReviewAsync(Company company, Review review)
 		{
-			company.Reviews.Add(review);
+			company.AddReview(review);
 			await SaveChangesAsync();
 
 			return company;

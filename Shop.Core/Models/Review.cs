@@ -33,10 +33,10 @@
 
 		public int? ProductId { get; private set; }
 
-		public Product? Product { get; private set; }
+		public Product Product { get; private set; }
 
 		public int? CompanyId { get; private set; }
 
-		public Company? Company { get; private set; }
+		public Company Company { get; private set; }
 	}
 }

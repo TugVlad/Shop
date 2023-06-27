@@ -11,10 +11,13 @@ namespace Shop.Data
 		public DbSet<Product> Products { get; set; }
 		public DbSet<Review> Reviews { get; set; }
 		public DbSet<Company> Companies { get; set; }
+		public DbSet<CompanyProduct> CompanyProducts { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.ApplyConfiguration(new ProductConfiguration());
+			modelBuilder.ApplyConfiguration(new CompanyProductConfiguration());
+			modelBuilder.ApplyConfiguration(new ReviewConfiguration());
 		}
 	}
 }

@@ -1,6 +1,4 @@
 ﻿using Shop.Enums;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shop.Core.Models
 {
@@ -8,7 +6,6 @@ namespace Shop.Core.Models
 	{
 		public Product()
 		{
-
 		}
 
 		public int Id { get; private set; }
@@ -23,9 +20,9 @@ namespace Shop.Core.Models
 
 		public int Quantity { get; private set; }
 
-		public List<Review> Reviews { get; private set; }
+		public List<Review> Reviews { get; private set; } = new();
 
-		public List<Company> Companies { get; private set; }
+		public List<CompanyProduct> CompanyProducts { get; private set; } = new();
 
 		public void UpdateName(string name)
 		{
@@ -34,7 +31,7 @@ namespace Shop.Core.Models
 
 		public void UpdateDescription(string description)
 		{
-			Description	= description;
+			Description = description;
 		}
 
 		public void UpdateType(ProductTypeEnum type)
@@ -60,6 +57,16 @@ namespace Shop.Core.Models
 		public void DecreaseQuantity(int quantity)
 		{
 			Quantity -= quantity;
+		}
+
+		public void AddReview(Review review)
+		{
+			Reviews.Add(review);
+		}
+
+		public void AddCompany(int companyId)
+		{
+			CompanyProducts.Add(new CompanyProduct(companyId, Id));
 		}
 	}
 }

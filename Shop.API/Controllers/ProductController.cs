@@ -27,10 +27,10 @@ namespace Shop.API.Controllers
 		}
 
 		[HttpGet]
-		[Route("productsWithReviews")]
-		public async Task<ActionResult> GetAllProductsWithReviews()
+		[Route("productsCompleteInformation")]
+		public async Task<ActionResult> GetAllProductsWithCompleteInformation()
 		{
-			var products = await _productService.GetProductsWithReviewsAsync();
+			var products = await _productService.GetProductsCompleteInformationAsync();
 			return Ok(products);
 		}
 

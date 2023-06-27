@@ -22,15 +22,16 @@ namespace Shop.Infrastructure.Repositories.Implementations
 		}
 		public async Task<Product> AddProductReviewAsync(Product product, Review review)
 		{
-			product.Reviews.Add(review);
+			product.AddReview(review);
 			await SaveChangesAsync();
 
 			return product;
 		}
 
-		public async Task<Product> AddProductCompanyAsync(Product product, Company company)
+		//TODO replace company with companyID
+		public async Task<Product> AddProductCompanyAsync(Product product, int companyId)
 		{
-			product.Companies.Add(company);
+			product.AddCompany(companyId);
 			await SaveChangesAsync();
 
 			return product;
@@ -61,7 +62,7 @@ namespace Shop.Infrastructure.Repositories.Implementations
 		{
 			return await _context.Products
 				.Include(e => e.Reviews)
-				.Include(e => e.Companies)
+				.Include(e => e.CompanyProducts)
 				.FirstOrDefaultAsync(e => e.Id == productId);
 		}
 
@@ -70,9 +71,9 @@ namespace Shop.Infrastructure.Repositories.Implementations
 			return await _context.Products.ToListAsync();
 		}
 
-		public async Task<List<Product>> GetProductsWithReviewsAsync()
+		public async Task<List<Product>> GetProductsCompleteInformationAsync()
 		{
-			return await _context.Products.Include(e => e.Reviews).ToListAsync();
+			return await _context.Products.Include(e => e.Reviews).Include(e => e.CompanyProducts).ToListAsync();
 		}
 
 		public async Task<Product> UpdateProductAsync(int productId, Product product)

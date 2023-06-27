@@ -45,12 +45,13 @@ namespace Shop.Application.Services.Implementations
 
 			var company = await _companyRepository.GetCompanyByIdAsync(companyId);
 
-			if (company == null || product.Companies.FirstOrDefault(e => e.Id == company.Id) != null)
+			//TODO return proper message if company doesn't exist
+			if (company == null || product.CompanyProducts.FirstOrDefault(e => e.CompanyId == company.Id) != null)
 			{
 				return product;
 			}
 
-			return await _productRepository.AddProductCompanyAsync(product, company);
+			return await _productRepository.AddProductCompanyAsync(product, companyId);
 		}
 
 		public async Task<bool> DeleteProductAsync(int productId)
@@ -68,9 +69,9 @@ namespace Shop.Application.Services.Implementations
 			return await _productRepository.GetProductsAsync();
 		}
 
-		public async Task<List<Product>> GetProductsWithReviewsAsync()
+		public async Task<List<Product>> GetProductsCompleteInformationAsync()
 		{
-			return await _productRepository.GetProductsWithReviewsAsync();
+			return await _productRepository.GetProductsCompleteInformationAsync();
 		}
 
 		public async Task<Product> UpdateProductAsync(int productId, Product product)
