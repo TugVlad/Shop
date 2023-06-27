@@ -13,11 +13,11 @@ namespace Shop.API.Controllers
 		private readonly ICompanyService _companyService;
 		private readonly IMapper _mapper;
 
-        public CompanyController(IMapper mapper, ICompanyService companyService)
-        {
+		public CompanyController(IMapper mapper, ICompanyService companyService)
+		{
 			_mapper = mapper;
-            _companyService = companyService;
-        }
+			_companyService = companyService;
+		}
 
 		[HttpGet]
 		public async Task<ActionResult> GetAllCompanies()

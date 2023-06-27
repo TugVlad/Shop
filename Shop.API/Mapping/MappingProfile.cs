@@ -6,10 +6,10 @@ namespace Shop.API.Mapping
 {
 	public class MappingProfile : Profile
 	{
-        public MappingProfile()
-        {
-            CreateMap<Company, CompanyViewModel>().ReverseMap();
-            CreateMap<Product, ProductViewModel>().ReverseMap();
-        }
-    }
+		public MappingProfile()
+		{
+			CreateMap<Company, CompanyViewModel>().ReverseMap();
+			CreateMap<Product, ProductViewModel>().ReverseMap();
+		}
+	}
 }

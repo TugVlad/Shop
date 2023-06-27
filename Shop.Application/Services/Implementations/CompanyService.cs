@@ -29,7 +29,7 @@ namespace Shop.Application.Services.Implementations
 
 			var review = new Review("title", reviewMessage, 5, company);
 
-			return await _companyRepository.AddCompanyReviewAsync(company,review);
+			return await _companyRepository.AddCompanyReviewAsync(company, review);
 		}
 
 		public async Task<bool> DeleteCompanyAsync(int companyId)
