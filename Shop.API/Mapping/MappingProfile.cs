@@ -10,6 +10,8 @@ namespace Shop.API.Mapping
 		{
 			CreateMap<Company, CompanyViewModel>().ReverseMap();
 			CreateMap<Product, ProductViewModel>().ReverseMap();
+			CreateMap<Account, CreateAccountViewModel>().ReverseMap();
+			CreateMap<Account, AccountViewModel>().ReverseMap();
 		}
 	}
 }

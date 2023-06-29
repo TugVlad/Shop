@@ -1,9 +1,10 @@
 ﻿namespace Shop.Core.Models
 {
-	public class Company
+	public class Company : BaseClass
 	{
 		public Company()
 		{
+			SetBaseCreationInfo();
 		}
 
 		public int Id { get; private set; }

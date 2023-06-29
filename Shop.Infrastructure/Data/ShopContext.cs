@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shop.Core.Models;
-using Shop.Infrastructure.EntityConfigurations;
+using System.Reflection;
 
 namespace Shop.Data
 {
@@ -12,12 +12,15 @@ namespace Shop.Data
 		public DbSet<Review> Reviews { get; set; }
 		public DbSet<Company> Companies { get; set; }
 		public DbSet<CompanyProduct> CompanyProducts { get; set; }
+		public DbSet<Account> Accounts { get; set; }
+		public DbSet<Order> Orders { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.ApplyConfiguration(new ProductConfiguration());
-			modelBuilder.ApplyConfiguration(new CompanyProductConfiguration());
-			modelBuilder.ApplyConfiguration(new ReviewConfiguration());
+			modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly(),
+				t => t.GetInterfaces().Any(i =>
+				i.IsGenericType &&
+				i.GetGenericTypeDefinition() == typeof(IEntityTypeConfiguration<>)));
 		}
 	}
 }

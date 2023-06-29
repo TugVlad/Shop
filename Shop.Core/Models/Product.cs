@@ -2,10 +2,11 @@
 
 namespace Shop.Core.Models
 {
-	public class Product
+	public class Product : BaseClass
 	{
 		public Product()
 		{
+			SetBaseCreationInfo();
 		}
 
 		public int Id { get; private set; }
@@ -20,9 +21,13 @@ namespace Shop.Core.Models
 
 		public int Quantity { get; private set; }
 
+		public float Score { get; private set; }
+
 		public List<Review> Reviews { get; private set; } = new();
 
 		public List<CompanyProduct> CompanyProducts { get; private set; } = new();
+
+		public List<Order> Orders { get; private set; } = new();
 
 		public void UpdateName(string name)
 		{
