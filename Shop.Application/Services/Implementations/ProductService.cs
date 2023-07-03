@@ -7,12 +7,10 @@ namespace Shop.Application.Services.Implementations
 	public class ProductService : IProductService
 	{
 		private readonly IProductRepository _productRepository;
-		private readonly ICompanyRepository _companyRepository;
 
-		public ProductService(IProductRepository productRepository, ICompanyRepository companyRepository)
+		public ProductService(IProductRepository productRepository)
 		{
 			_productRepository = productRepository;
-			_companyRepository = companyRepository;
 		}
 
 		public async Task<Product> AddProductAsync(Product product)
@@ -30,33 +28,22 @@ namespace Shop.Application.Services.Implementations
 			}
 
 			var review = new Review("title", reviewMessage, 5, product);
+			product.AddReview(review);
+			await _productRepository.SaveChangesAsync();
 
-			return await _productRepository.AddProductReviewAsync(product, review);
-		}
-
-		public async Task<Product> AddProductCompanyAsync(int productId, int companyId)
-		{
-			var product = await _productRepository.GetProductWithDependenciesByIdAsync(productId);
-
-			if (product == null)
-			{
-				return null;
-			}
-
-			var company = await _companyRepository.GetCompanyByIdAsync(companyId);
-
-			//TODO return proper message if company doesn't exist
-			if (company == null || product.CompanyProducts.FirstOrDefault(e => e.CompanyId == company.Id) != null)
-			{
-				return product;
-			}
-
-			return await _productRepository.AddProductCompanyAsync(product, companyId);
+			return product;
 		}
 
 		public async Task<bool> DeleteProductAsync(int productId)
 		{
-			return await _productRepository.DeleteProductAsync(productId);
+			var product = await _productRepository.GetProductByIdAsync(productId);
+
+			if (product == null)
+			{
+				return false;
+			}
+
+			return await _productRepository.DeleteProductAsync(product);
 		}
 
 		public async Task<Product> GetProductByIdAsync(int productId)
@@ -76,7 +63,28 @@ namespace Shop.Application.Services.Implementations
 
 		public async Task<Product> UpdateProductAsync(int productId, Product product)
 		{
-			return await _productRepository.UpdateProductAsync(productId, product);
+			var currentProduct = await _productRepository.GetProductByIdAsync(productId);
+
+			if (currentProduct == null)
+			{
+				return null;
+			}
+
+			currentProduct.UpdateName(product.Name);
+			currentProduct.UpdateDescription(product.Description);
+			currentProduct.UpdateType(product.Type);
+			currentProduct.UpdatePrice(product.Price);
+			currentProduct.UpdateQuantity(product.Quantity);
+
+			await _productRepository.SaveChangesAsync();
+
+			return currentProduct;
+		}
+
+		public async Task<bool> CheckIfProductsExistAsync(List<int> productIds)
+		{
+			var count = await _productRepository.GetProductCountBasedOnIds(productIds);
+			return count == productIds.Count;
 		}
 	}
 }

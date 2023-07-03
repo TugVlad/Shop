@@ -1,14 +1,19 @@
 ﻿using Shop.Core.Enums;
+using System.Data;
 
 namespace Shop.Core.Models
 {
 	public class Order : BaseClass
 	{
-		public Order(Guid userId, int productId, int quantity, string address, OrderStatusEnum orderStatus, PaymentMethodEnum paymentMethod)
+		public Order()
 		{
+			SetBaseCreationInfo();
+		}
+
+		public Order(Guid userId, string address, OrderStatusEnum orderStatus, PaymentMethodEnum paymentMethod)
+		{
+			SetBaseCreationInfo();
 			UserId = userId;
-			ProductId = productId;
-			Quantity = quantity;
 			Address = address;
 			OrderStatus = orderStatus;
 			PaymentMethod = paymentMethod;
@@ -17,13 +22,33 @@ namespace Shop.Core.Models
 		public int Id { get; private set; }
 		public Guid UserId { get; private set; }
 		public Account User { get; private set; }
-		public int ProductId { get; private set; }
-		public Product Product { get; private set; }
-		public int Quantity { get; private set; }
+		public List<ProductOrder> ProductOrders { get; private set; } = new();
 		public string? Address { get; private set; }
 		public OrderStatusEnum OrderStatus { get; private set; }
 		public PaymentMethodEnum PaymentMethod { get; private set; }
 		public bool IsPaid { get; private set; }
 		public DateTime? PaidAt { get; private set; }
+
+		public void UpdateOrderId()
+		{
+			ProductOrders.ForEach(e =>
+			{
+				e.UpdateOrderId(Id);
+			});
+		}
+
+		public void UpdatePaymentStatus()
+		{
+			OrderStatus = OrderStatusEnum.OrderPlaced;
+			IsPaid = true;
+			PaidAt = DateTime.Now;
+			UpdateBaseInfo();
+		}
+
+		public void UpdateStatus(OrderStatusEnum orderStatus)
+		{
+			OrderStatus = orderStatus;
+			UpdateBaseInfo();
+		}
 	}
 }

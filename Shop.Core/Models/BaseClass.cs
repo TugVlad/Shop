@@ -18,6 +18,11 @@
 			CreatedAt = DateTime.Now;
 		}
 
+		protected void UpdateBaseInfo()
+		{
+			UpdatedAt = DateTime.Now;
+		}
+
 		protected void UpdateBaseInfo(Guid userId)
 		{
 			UpdatedBy = userId;

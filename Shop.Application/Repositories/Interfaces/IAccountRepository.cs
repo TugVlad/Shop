@@ -2,7 +2,7 @@
 
 namespace Shop.Application.Repositories.Interfaces
 {
-	public interface IAccountRepository
+	public interface IAccountRepository : IBaseRepository
 	{
 		Task<List<Account>> GetAllAccountAsync();
 		Task<Account> AddAccountAsync(Account account);

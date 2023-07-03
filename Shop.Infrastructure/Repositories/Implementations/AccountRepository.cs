@@ -5,14 +5,9 @@ using Shop.Data;
 
 namespace Shop.Infrastructure.Repositories.Implementations
 {
-	public class AccountRepository : IAccountRepository
+	public class AccountRepository : BaseRepository, IAccountRepository
 	{
-		private readonly ShopContext _context;
-
-		public AccountRepository(ShopContext context)
-		{
-			_context = context;
-		}
+		public AccountRepository(ShopContext context) : base(context) { }
 
 		public async Task<Account> AddAccountAsync(Account account)
 		{

@@ -18,6 +18,7 @@ namespace Shop.Application.Services.Implementations
 			return await _companyRepository.AddCompanyAsync(company);
 		}
 
+		//TODO -> make this properly
 		public async Task<Company> AddCompanyReviewAsync(int companyId, string reviewMessage)
 		{
 			var company = await _companyRepository.GetCompanyReviewsByIdAsync(companyId);
@@ -28,13 +29,22 @@ namespace Shop.Application.Services.Implementations
 			}
 
 			var review = new Review("title", reviewMessage, 5, company);
+			company.AddReview(review);
+			await _companyRepository.SaveChangesAsync();
 
-			return await _companyRepository.AddCompanyReviewAsync(company, review);
+			return company;
 		}
 
 		public async Task<bool> DeleteCompanyAsync(int companyId)
 		{
-			return await _companyRepository.DeleteCompanyAsync(companyId);
+			var company = await _companyRepository.GetCompanyByIdAsync(companyId);
+
+			if (company == null)
+			{
+				return false;
+			}
+
+			return await _companyRepository.DeleteCompanyAsync(company);
 		}
 
 		public async Task<List<Company>> GetAllCompaniesAsync()

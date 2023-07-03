@@ -5,14 +5,9 @@ using Shop.Data;
 
 namespace Shop.Infrastructure.Repositories.Implementations
 {
-	public class CompanyRepository : ICompanyRepository
+	public class CompanyRepository : BaseRepository, ICompanyRepository
 	{
-		private readonly ShopContext _context;
-
-		public CompanyRepository(ShopContext shopContext)
-		{
-			_context = shopContext;
-		}
+		public CompanyRepository(ShopContext context) : base(context) { }
 
 		public async Task<Company> AddCompanyAsync(Company company)
 		{
@@ -21,27 +16,10 @@ namespace Shop.Infrastructure.Repositories.Implementations
 			return company;
 		}
 
-		public async Task<Company> AddCompanyReviewAsync(Company company, Review review)
+		public async Task<bool> DeleteCompanyAsync(Company company)
 		{
-			company.AddReview(review);
-			await SaveChangesAsync();
-
-			return company;
-		}
-
-		public async Task<bool> DeleteCompanyAsync(int companyId)
-		{
-			var company = await _context.Companies.FirstOrDefaultAsync(e => e.Id == companyId);
-
-			if (company == null)
-			{
-				return false;
-			}
-
 			_context.Companies.Remove(company);
 			await SaveChangesAsync();
-
-			var test = _context.Companies.ToList();
 
 			return true;
 		}
@@ -64,11 +42,6 @@ namespace Shop.Infrastructure.Repositories.Implementations
 		public async Task<Company> GetCompanyReviewsByIdAsync(int companyId)
 		{
 			return await _context.Companies.Include(e => e.Reviews).FirstOrDefaultAsync(e => e.Id == companyId);
-		}
-
-		public async Task SaveChangesAsync()
-		{
-			await _context.SaveChangesAsync();
 		}
 	}
 }

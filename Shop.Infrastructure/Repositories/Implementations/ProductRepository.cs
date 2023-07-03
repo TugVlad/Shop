@@ -5,14 +5,9 @@ using Shop.Data;
 
 namespace Shop.Infrastructure.Repositories.Implementations
 {
-	public class ProductRepository : IProductRepository
+	public class ProductRepository : BaseRepository, IProductRepository
 	{
-		private readonly ShopContext _context;
-
-		public ProductRepository(ShopContext shopContext)
-		{
-			_context = shopContext;
-		}
+		public ProductRepository(ShopContext context) : base(context) { }
 
 		public async Task<Product> AddProductAsync(Product product)
 		{
@@ -20,32 +15,9 @@ namespace Shop.Infrastructure.Repositories.Implementations
 			await SaveChangesAsync();
 			return product;
 		}
-		public async Task<Product> AddProductReviewAsync(Product product, Review review)
+
+		public async Task<bool> DeleteProductAsync(Product product)
 		{
-			product.AddReview(review);
-			await SaveChangesAsync();
-
-			return product;
-		}
-
-		//TODO replace company with companyID
-		public async Task<Product> AddProductCompanyAsync(Product product, int companyId)
-		{
-			product.AddCompany(companyId);
-			await SaveChangesAsync();
-
-			return product;
-		}
-
-		public async Task<bool> DeleteProductAsync(int productId)
-		{
-			var product = await _context.Products.FirstOrDefaultAsync(e => e.Id == productId);
-
-			if (product == null)
-			{
-				return false;
-			}
-
 			_context.Products.Remove(product);
 			await SaveChangesAsync();
 
@@ -62,7 +34,6 @@ namespace Shop.Infrastructure.Repositories.Implementations
 		{
 			return await _context.Products
 				.Include(e => e.Reviews)
-				.Include(e => e.CompanyProducts)
 				.FirstOrDefaultAsync(e => e.Id == productId);
 		}
 
@@ -73,33 +44,12 @@ namespace Shop.Infrastructure.Repositories.Implementations
 
 		public async Task<List<Product>> GetProductsCompleteInformationAsync()
 		{
-			return await _context.Products.Include(e => e.Reviews).Include(e => e.CompanyProducts).ToListAsync();
+			return await _context.Products.Include(e => e.Reviews).ToListAsync();
 		}
 
-		public async Task<Product> UpdateProductAsync(int productId, Product product)
+		public async Task<int> GetProductCountBasedOnIds(List<int> productIds)
 		{
-			var existingProduct = await _context.Products.FirstOrDefaultAsync(e => e.Id == productId);
-
-			if (existingProduct == null)
-			{
-				return null;
-			}
-
-			_context.Update(existingProduct);
-			existingProduct.UpdateName(product.Name);
-			existingProduct.UpdateDescription(product.Description);
-			existingProduct.UpdateType(product.Type);
-			existingProduct.UpdatePrice(product.Price);
-			existingProduct.UpdateQuantity(product.Quantity);
-			await SaveChangesAsync();
-
-			return existingProduct;
+			return await _context.Products.Where(e => productIds.Contains(e.Id)).CountAsync();
 		}
-
-		public async Task SaveChangesAsync()
-		{
-			await _context.SaveChangesAsync();
-		}
-
 	}
 }

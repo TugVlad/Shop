@@ -9,8 +9,8 @@ namespace Shop.Application.Services.Interfaces
 		Task<Product> GetProductByIdAsync(int productId);
 		Task<Product> AddProductAsync(Product product);
 		Task<Product> AddProductReviewAsync(int productId, string reviewMessage);
-		Task<Product> AddProductCompanyAsync(int productId, int companyId);
 		Task<Product> UpdateProductAsync(int productId, Product product);
 		Task<bool> DeleteProductAsync(int productId);
+		Task<bool> CheckIfProductsExistAsync(List<int> productIds);
 	}
 }

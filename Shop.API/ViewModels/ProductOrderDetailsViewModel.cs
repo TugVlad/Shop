@@ -1,9 +1,8 @@
 ﻿namespace Shop.API.ViewModels
 {
-	public class ProductCompanyViewModel
+	public class ProductOrderDetailsViewModel
 	{
 		public int ProductId { get; set; }
-
-		public int CompanyId { get; set; }
+		public int Quantity { get; set; }
 	}
 }

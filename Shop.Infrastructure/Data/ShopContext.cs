@@ -11,9 +11,9 @@ namespace Shop.Data
 		public DbSet<Product> Products { get; set; }
 		public DbSet<Review> Reviews { get; set; }
 		public DbSet<Company> Companies { get; set; }
-		public DbSet<CompanyProduct> CompanyProducts { get; set; }
 		public DbSet<Account> Accounts { get; set; }
 		public DbSet<Order> Orders { get; set; }
+		public DbSet<ProductOrder> ProductOrders { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{

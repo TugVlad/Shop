@@ -15,11 +15,6 @@ namespace Shop.Infrastructure.EntityConfigurations
 				.WithMany(f => f.Orders)
 				.HasForeignKey(e => e.UserId)
 				.OnDelete(DeleteBehavior.Cascade);
-
-			builder.HasOne(e => e.Product)
-				.WithMany(f => f.Orders)
-				.HasForeignKey(e => e.ProductId)
-				.OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }

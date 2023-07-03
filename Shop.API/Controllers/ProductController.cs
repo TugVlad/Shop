@@ -30,6 +30,7 @@ namespace Shop.API.Controllers
 		[Route("productsCompleteInformation")]
 		public async Task<ActionResult> GetAllProductsWithCompleteInformation()
 		{
+			//TODO -> Review 'Complete Information'
 			var products = await _productService.GetProductsCompleteInformationAsync();
 			return Ok(products);
 		}
@@ -53,14 +54,6 @@ namespace Shop.API.Controllers
 		public async Task<ActionResult> AddProductReview([FromBody] ProductReviewViewModel request)
 		{
 			var product = await _productService.AddProductReviewAsync(request.ProductId, request.ReviewMessage);
-			return Ok(product);
-		}
-
-		[HttpPost]
-		[Route("addCompany")]
-		public async Task<ActionResult> AddProductCompany([FromBody] ProductCompanyViewModel request)
-		{
-			var product = await _productService.AddProductCompanyAsync(request.ProductId, request.CompanyId);
 			return Ok(product);
 		}
 
