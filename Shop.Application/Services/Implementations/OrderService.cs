@@ -5,26 +5,51 @@ using Shop.Core.Models;
 
 namespace Shop.Application.Services.Implementations
 {
-	public class OrderService : IOrderService
+	public class OrderService : BaseService, IOrderService
 	{
 		private readonly IOrderRepository _orderRepository;
-		private readonly IProductService _productService;
+		private readonly IProductRepository _productRepository;
 
-		public OrderService(IOrderRepository orderRepository, IProductService productRepository)
+		public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IUnitOfWork unitOfWork) : base(unitOfWork)
 		{
 			_orderRepository = orderRepository;
-			_productService = productRepository;
+			_productRepository = productRepository;
 		}
 
-		public async Task<Order> AddOrderAsync(Order order)
+		public async Task<Order> AddOrderAsync(Order newOrder)
 		{
-			if (!await _productService.CheckIfProductsExistAsync(order.ProductOrders.Select(e => e.ProductId).ToList()))
+			var products = await _productRepository.GetProductsByIdsAsync(newOrder.ProductOrders.Select(e => e.ProductId).ToList());
+			if (products.Count != newOrder.ProductOrders.Count)
 			{
 				return null;
 			}
 
-			order.UpdateOrderId();
-			return await _orderRepository.AddOrderAsync(order);
+			await _unitOfWork.BeginTransaction();
+			try
+			{
+				newOrder.UpdateOrderId();
+				var order = await _orderRepository.AddOrderAsync(newOrder);
+
+				products.ForEach(product =>
+				{
+					var quantity = newOrder.ProductOrders.FirstOrDefault(e => e.ProductId == product.Id)?.Quantity;
+					if (quantity == null || product.Quantity < quantity)
+					{
+						throw new Exception();
+					}
+					product.DecreaseQuantity(quantity.Value);
+				});
+				await _unitOfWork.SaveChangesAsync();
+
+				await _unitOfWork.CommitTransaction();
+				return order;
+			}
+			catch (Exception)
+			{
+				await _unitOfWork.RollbackTransaction();
+			}
+
+			return null;
 		}
 
 		public async Task<List<Order>> GetAllOrdersAsync()
@@ -41,9 +66,22 @@ namespace Shop.Application.Services.Implementations
 				return false;
 			}
 
-			order.UpdatePaymentStatus();
-			await _orderRepository.SaveChangesAsync();
-			return true;
+			await _unitOfWork.BeginTransaction();
+
+			try
+			{
+				order.UpdatePaymentStatus();
+				await _unitOfWork.SaveChangesAsync();
+
+				await _unitOfWork.CommitTransaction();
+				return true;
+			}
+			catch (Exception)
+			{
+				await _unitOfWork.RollbackTransaction();
+			}
+
+			return false;
 		}
 
 		public async Task<bool> UpdateShippingForOrderAsync(int orderId, OrderStatusEnum orderStatus)
@@ -55,21 +93,27 @@ namespace Shop.Application.Services.Implementations
 				return false;
 			}
 
-			order.UpdateStatus(orderStatus);
-			await _orderRepository.SaveChangesAsync();
-			return true;
+			await _unitOfWork.BeginTransaction();
+
+			try
+			{
+				order.UpdateStatus(orderStatus);
+				await _unitOfWork.SaveChangesAsync();
+
+				await _unitOfWork.CommitTransaction();
+				return true;
+			}
+			catch (Exception)
+			{
+				await _unitOfWork.RollbackTransaction();
+			}
+
+			return false;
 		}
 
 		public async Task<Order> GetOrderInformation(int orderId)
 		{
-			var order = await _orderRepository.GetOrderWithDependenciesByIdAsync(orderId);
-
-			if (order == null)
-			{
-				return null;
-			}
-
-			return order;
+			return await _orderRepository.GetOrderWithDependenciesByIdAsync(orderId);
 		}
 	}
 }

@@ -9,7 +9,8 @@ namespace Shop.Application.Repositories.Interfaces
 		Task<Product> GetProductByIdAsync(int productId);
 		Task<Product> GetProductWithDependenciesByIdAsync(int productId);
 		Task<Product> AddProductAsync(Product product);
-		Task<bool> DeleteProductAsync(Product product);
+		void DeleteProductAsync(Product product);
 		Task<int> GetProductCountBasedOnIds(List<int> productIds);
+		Task<List<Product>> GetProductsByIdsAsync(List<int> productIds);
 	}
 }

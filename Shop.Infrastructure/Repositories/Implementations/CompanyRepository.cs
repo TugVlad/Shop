@@ -16,12 +16,9 @@ namespace Shop.Infrastructure.Repositories.Implementations
 			return company;
 		}
 
-		public async Task<bool> DeleteCompanyAsync(Company company)
+		public void DeleteCompanyAsync(Company company)
 		{
 			_context.Companies.Remove(company);
-			await SaveChangesAsync();
-
-			return true;
 		}
 
 		public async Task<List<Company>> GetAllCompaniesAsync()

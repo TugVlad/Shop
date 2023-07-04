@@ -12,7 +12,7 @@ namespace Shop.Infrastructure.Repositories.Implementations
 		public async Task<Account> AddAccountAsync(Account account)
 		{
 			await _context.Accounts.AddAsync(account);
-			await _context.SaveChangesAsync();
+			await SaveChangesAsync();
 
 			return account;
 		}

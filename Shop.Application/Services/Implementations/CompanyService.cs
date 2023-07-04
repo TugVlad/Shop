@@ -4,11 +4,11 @@ using Shop.Core.Models;
 
 namespace Shop.Application.Services.Implementations
 {
-	public class CompanyService : ICompanyService
+	public class CompanyService : BaseService, ICompanyService
 	{
 		private readonly ICompanyRepository _companyRepository;
 
-		public CompanyService(ICompanyRepository companyRepository)
+		public CompanyService(ICompanyRepository companyRepository, IUnitOfWork unitOfWork) : base(unitOfWork)
 		{
 			_companyRepository = companyRepository;
 		}
@@ -28,9 +28,20 @@ namespace Shop.Application.Services.Implementations
 				return null;
 			}
 
-			var review = new Review("title", reviewMessage, 5, company);
-			company.AddReview(review);
-			await _companyRepository.SaveChangesAsync();
+			await _unitOfWork.BeginTransaction();
+
+			try
+			{
+				var review = new Review("title", reviewMessage, 5, company);
+				company.AddReview(review);
+				await _unitOfWork.SaveChangesAsync();
+
+				await _unitOfWork.CommitTransaction();
+			}
+			catch (Exception)
+			{
+				await _unitOfWork.RollbackTransaction();
+			}
 
 			return company;
 		}
@@ -44,7 +55,22 @@ namespace Shop.Application.Services.Implementations
 				return false;
 			}
 
-			return await _companyRepository.DeleteCompanyAsync(company);
+			await _unitOfWork.BeginTransaction();
+
+			try
+			{
+				_companyRepository.DeleteCompanyAsync(company);
+				await _unitOfWork.SaveChangesAsync();
+
+				await _unitOfWork.CommitTransaction();
+				return true;
+			}
+			catch (Exception)
+			{
+				await _unitOfWork.RollbackTransaction();
+			}
+
+			return false;
 		}
 
 		public async Task<List<Company>> GetAllCompaniesAsync()

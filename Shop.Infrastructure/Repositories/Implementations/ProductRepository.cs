@@ -16,13 +16,9 @@ namespace Shop.Infrastructure.Repositories.Implementations
 			return product;
 		}
 
-		public async Task<bool> DeleteProductAsync(Product product)
+		public void DeleteProductAsync(Product product)
 		{
 			_context.Products.Remove(product);
-			await SaveChangesAsync();
-
-			return true;
-
 		}
 
 		public async Task<Product> GetProductByIdAsync(int productId)
@@ -45,6 +41,11 @@ namespace Shop.Infrastructure.Repositories.Implementations
 		public async Task<List<Product>> GetProductsCompleteInformationAsync()
 		{
 			return await _context.Products.Include(e => e.Reviews).ToListAsync();
+		}
+
+		public async Task<List<Product>> GetProductsByIdsAsync(List<int> productIds)
+		{
+			return await _context.Products.Where(e => productIds.Contains(e.Id)).ToListAsync();
 		}
 
 		public async Task<int> GetProductCountBasedOnIds(List<int> productIds)

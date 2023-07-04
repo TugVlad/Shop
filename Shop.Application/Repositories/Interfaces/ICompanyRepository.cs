@@ -9,6 +9,6 @@ namespace Shop.Application.Repositories.Interfaces
 		Task<Company> GetCompanyByIdAsync(int companyId);
 		Task<Company> GetCompanyReviewsByIdAsync(int companyId);
 		Task<Company> AddCompanyAsync(Company company);
-		Task<bool> DeleteCompanyAsync(Company company);
+		void DeleteCompanyAsync(Company company);
 	}
 }

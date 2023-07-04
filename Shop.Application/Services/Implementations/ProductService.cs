@@ -4,11 +4,11 @@ using Shop.Core.Models;
 
 namespace Shop.Application.Services.Implementations
 {
-	public class ProductService : IProductService
+	public class ProductService : BaseService, IProductService
 	{
 		private readonly IProductRepository _productRepository;
 
-		public ProductService(IProductRepository productRepository)
+		public ProductService(IProductRepository productRepository, IUnitOfWork unitOfWork) : base(unitOfWork)
 		{
 			_productRepository = productRepository;
 		}
@@ -27,11 +27,23 @@ namespace Shop.Application.Services.Implementations
 				return null;
 			}
 
-			var review = new Review("title", reviewMessage, 5, product);
-			product.AddReview(review);
-			await _productRepository.SaveChangesAsync();
+			await _unitOfWork.BeginTransaction();
 
-			return product;
+			try
+			{
+				var review = new Review("title", reviewMessage, 5, product);
+				product.AddReview(review);
+				await _unitOfWork.SaveChangesAsync();
+
+				await _unitOfWork.CommitTransaction();
+				return product;
+			}
+			catch (Exception)
+			{
+				await _unitOfWork.RollbackTransaction();
+			}
+
+			return null;
 		}
 
 		public async Task<bool> DeleteProductAsync(int productId)
@@ -43,7 +55,22 @@ namespace Shop.Application.Services.Implementations
 				return false;
 			}
 
-			return await _productRepository.DeleteProductAsync(product);
+			await _unitOfWork.BeginTransaction();
+
+			try
+			{
+				_productRepository.DeleteProductAsync(product);
+				await _unitOfWork.SaveChangesAsync();
+
+				await _unitOfWork.CommitTransaction();
+				return true;
+			}
+			catch (Exception)
+			{
+				await _unitOfWork.RollbackTransaction();
+			}
+
+			return false;
 		}
 
 		public async Task<Product> GetProductByIdAsync(int productId)
@@ -70,15 +97,27 @@ namespace Shop.Application.Services.Implementations
 				return null;
 			}
 
-			currentProduct.UpdateName(product.Name);
-			currentProduct.UpdateDescription(product.Description);
-			currentProduct.UpdateType(product.Type);
-			currentProduct.UpdatePrice(product.Price);
-			currentProduct.UpdateQuantity(product.Quantity);
+			await _unitOfWork.BeginTransaction();
 
-			await _productRepository.SaveChangesAsync();
+			try
+			{
+				currentProduct.UpdateName(product.Name);
+				currentProduct.UpdateDescription(product.Description);
+				currentProduct.UpdateType(product.Type);
+				currentProduct.UpdatePrice(product.Price);
+				currentProduct.UpdateQuantity(product.Quantity);
 
-			return currentProduct;
+				await _unitOfWork.SaveChangesAsync();
+
+				await _unitOfWork.CommitTransaction();
+				return currentProduct;
+			}
+			catch (Exception)
+			{
+				await _unitOfWork.RollbackTransaction();
+			}
+
+			return null;
 		}
 
 		public async Task<bool> CheckIfProductsExistAsync(List<int> productIds)
