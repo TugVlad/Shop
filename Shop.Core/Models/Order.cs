@@ -29,11 +29,11 @@ namespace Shop.Core.Models
 		public bool IsPaid { get; private set; }
 		public DateTime? PaidAt { get; private set; }
 
-		public void UpdateOrderId()
+		public void UpdateProductOrdersFromCart(List<ProductInCart> productInCarts)
 		{
-			ProductOrders.ForEach(e =>
+			productInCarts.ForEach(productInCart =>
 			{
-				e.UpdateOrderId(Id);
+				ProductOrders.Add(new ProductOrder(productInCart.ProductId, Id, productInCart.Quantity));
 			});
 		}
 

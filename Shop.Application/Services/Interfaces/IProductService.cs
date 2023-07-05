@@ -12,5 +12,6 @@ namespace Shop.Application.Services.Interfaces
 		Task<Product> UpdateProductAsync(int productId, Product product);
 		Task<bool> DeleteProductAsync(int productId);
 		Task<bool> CheckIfProductsExistAsync(List<int> productIds);
+		Task<bool> AddProductInCart(ProductInCart productInCart);
 	}
 }

@@ -9,17 +9,23 @@ namespace Shop.Application.Services.Implementations
 	{
 		private readonly IOrderRepository _orderRepository;
 		private readonly IProductRepository _productRepository;
+		private readonly IProductInCartRepository _productInCartRepository;
 
-		public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IUnitOfWork unitOfWork) : base(unitOfWork)
+		public OrderService(IOrderRepository orderRepository,
+			IProductRepository productRepository,
+			IProductInCartRepository productInCartRepository,
+			IUnitOfWork unitOfWork) : base(unitOfWork)
 		{
 			_orderRepository = orderRepository;
 			_productRepository = productRepository;
+			_productInCartRepository = productInCartRepository;
 		}
 
 		public async Task<Order> AddOrderAsync(Order newOrder)
 		{
-			var products = await _productRepository.GetProductsByIdsAsync(newOrder.ProductOrders.Select(e => e.ProductId).ToList());
-			if (products.Count != newOrder.ProductOrders.Count)
+			var prodcutsInCart = await _productInCartRepository.GetProductsInCartForAccountIdAsync(newOrder.UserId);
+			var products = await _productRepository.GetProductsByIdsAsync(prodcutsInCart.Select(e => e.ProductId).ToList());
+			if (products.Count != prodcutsInCart.Count)
 			{
 				return null;
 			}
@@ -27,7 +33,7 @@ namespace Shop.Application.Services.Implementations
 			await _unitOfWork.BeginTransaction();
 			try
 			{
-				newOrder.UpdateOrderId();
+				newOrder.UpdateProductOrdersFromCart(prodcutsInCart);
 				var order = await _orderRepository.AddOrderAsync(newOrder);
 
 				products.ForEach(product =>
@@ -39,6 +45,9 @@ namespace Shop.Application.Services.Implementations
 					}
 					product.DecreaseQuantity(quantity.Value);
 				});
+				await _unitOfWork.SaveChangesAsync();
+
+				_productInCartRepository.DeleteProductsFromCart(prodcutsInCart);
 				await _unitOfWork.SaveChangesAsync();
 
 				await _unitOfWork.CommitTransaction();

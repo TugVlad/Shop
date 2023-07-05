@@ -20,6 +20,7 @@
 		public string? PhoneNumber { get; private set; }
 		public string Address { get; private set; }
 		public List<Order> Orders { get; private set; } = new();
+		public List<ProductInCart> ProductsInCart { get; private set; } = new();
 
 		private void EncryptPassword(string password)
 		{

@@ -76,5 +76,13 @@ namespace Shop.API.Controllers
 			var response = await _productService.DeleteProductAsync(id);
 			return response ? Ok("Product Deleted!") : NotFound();
 		}
+
+		[HttpPost]
+		[Route("AddProductInCart")]
+		public async Task<ActionResult> AddProductInCart([FromBody] ProductInCartViewModel productInCart)
+		{
+			var response = await _productService.AddProductInCart(_mapper.Map<ProductInCart>(productInCart));
+			return response ? Ok("Product added in cart!") : NotFound();
+		}
 	}
 }

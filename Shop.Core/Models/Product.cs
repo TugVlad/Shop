@@ -31,6 +31,9 @@ namespace Shop.Core.Models
 
 		public List<ProductOrder> ProductOrders { get; private set; } = new();
 
+		public List<ProductInCart> ProductsInCart { get; private set; } = new();
+
+
 		public void UpdateName(string name)
 		{
 			Name = name;
