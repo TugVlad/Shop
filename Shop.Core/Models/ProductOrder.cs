@@ -4,10 +4,11 @@
 	{
 		public ProductOrder() { }
 
-		public ProductOrder(int productId, int orderId)
+		public ProductOrder(int productId, int orderId, int quantity)
 		{
 			ProductId = productId;
 			OrderId = orderId;
+			Quantity = quantity;
 		}
 
 		public int ProductId { get; private set; }

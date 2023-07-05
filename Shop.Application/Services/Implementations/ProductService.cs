@@ -7,10 +7,13 @@ namespace Shop.Application.Services.Implementations
 	public class ProductService : BaseService, IProductService
 	{
 		private readonly IProductRepository _productRepository;
+		private readonly IProductInCartRepository _productInCartRepository;
 
-		public ProductService(IProductRepository productRepository, IUnitOfWork unitOfWork) : base(unitOfWork)
+		public ProductService(IProductRepository productRepository, IProductInCartRepository productInCartRepository, IUnitOfWork unitOfWork)
+			: base(unitOfWork)
 		{
 			_productRepository = productRepository;
+			_productInCartRepository = productInCartRepository;
 		}
 
 		public async Task<Product> AddProductAsync(Product product)
@@ -124,6 +127,32 @@ namespace Shop.Application.Services.Implementations
 		{
 			var count = await _productRepository.GetProductCountBasedOnIds(productIds);
 			return count == productIds.Count;
+		}
+
+		public async Task<bool> AddProductInCart(ProductInCart productInCart)
+		{
+			var product = await _productRepository.GetProductByIdAsync(productInCart.ProductId);
+			if (product == null || product.Quantity < productInCart.Quantity)
+			{
+				return false;
+			}
+
+			await _unitOfWork.BeginTransaction();
+
+			try
+			{
+				await _productInCartRepository.AddProductInCartAsync(productInCart);
+				await _unitOfWork.SaveChangesAsync();
+
+				await _unitOfWork.CommitTransaction();
+				return true;
+			}
+			catch (Exception)
+			{
+				await _unitOfWork.RollbackTransaction();
+			}
+
+			return false;
 		}
 	}
 }

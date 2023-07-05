@@ -5,7 +5,6 @@ namespace Shop.API.ViewModels
 	public class OrderViewModel
 	{
 		public Guid UserId { get; set; }
-		public List<ProductOrderDetailsViewModel> ProductOrders { get; set; }
 		public string? Address { get; set; }
 		public PaymentMethodEnum PaymentMethod { get; set; }
 	}

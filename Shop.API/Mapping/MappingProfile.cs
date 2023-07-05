@@ -14,6 +14,7 @@ namespace Shop.API.Mapping
 			CreateMap<Account, AccountViewModel>().ReverseMap();
 			CreateMap<Order, OrderViewModel>().ReverseMap();
 			CreateMap<ProductOrder, ProductOrderDetailsViewModel>().ReverseMap();
+			CreateMap<ProductInCart, ProductInCartViewModel>().ReverseMap();
 		}
 	}
 }
