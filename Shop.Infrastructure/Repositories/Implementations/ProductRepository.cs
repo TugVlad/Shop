@@ -40,7 +40,7 @@ namespace Shop.Infrastructure.Repositories.Implementations
 
 		public async Task<List<Product>> GetProductsCompleteInformationAsync()
 		{
-			return await _context.Products.Include(e => e.Reviews).ToListAsync();
+			return await _context.Products.Include(e => e.Reviews).Include(e => e.Company).ToListAsync();
 		}
 
 		public async Task<List<Product>> GetProductsByIdsAsync(List<int> productIds)

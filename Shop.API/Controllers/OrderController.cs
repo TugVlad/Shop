@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Shop.API.ViewModels;
+using Shop.API.ViewModels.Order;
 using Shop.Application.Services.Interfaces;
 using Shop.Core.Enums;
 using Shop.Core.Models;
@@ -24,11 +24,11 @@ namespace Shop.API.Controllers
 		public async Task<ActionResult> GetAllOrders()
 		{
 			var orders = await _orderService.GetAllOrdersAsync();
-			return Ok(orders);
+			return Ok(_mapper.Map<List<OrderViewModel>>(orders));
 		}
 
 		[HttpPost]
-		public async Task<ActionResult> AddOrder([FromBody] OrderViewModel order)
+		public async Task<ActionResult> AddOrder([FromBody] AddOrderViewModel order)
 		{
 			var orderInfo = await _orderService.AddOrderAsync(_mapper.Map<Order>(order));
 			return Ok(_mapper.Map<OrderViewModel>(orderInfo));
@@ -55,7 +55,7 @@ namespace Shop.API.Controllers
 		public async Task<ActionResult> CheckOrder([FromRoute] int orderId)
 		{
 			var result = await _orderService.GetOrderInformation(orderId);
-			return result != null ? Ok(result) : NotFound();
+			return result != null ? Ok(_mapper.Map<OrderViewModel>(result)) : NotFound();
 		}
 	}
 }

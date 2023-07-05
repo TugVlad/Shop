@@ -1,8 +1,8 @@
 ﻿using Shop.Core.Enums;
 
-namespace Shop.API.ViewModels
+namespace Shop.API.ViewModels.Order
 {
-	public class OrderViewModel
+	public class AddOrderViewModel
 	{
 		public Guid UserId { get; set; }
 		public string? Address { get; set; }

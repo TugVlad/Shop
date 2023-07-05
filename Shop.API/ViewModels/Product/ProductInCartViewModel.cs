@@ -1,4 +1,4 @@
-﻿namespace Shop.API.ViewModels
+﻿namespace Shop.API.ViewModels.Product
 {
 	public class ProductInCartViewModel
 	{

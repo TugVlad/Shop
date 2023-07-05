@@ -21,8 +21,6 @@ namespace Shop.Core.Models
 
 		public int Quantity { get; private set; }
 
-		public float Score { get; private set; }
-
 		public List<Review> Reviews { get; private set; } = new();
 
 		public int? CompanyId { get; private set; }
@@ -34,34 +32,14 @@ namespace Shop.Core.Models
 		public List<ProductInCart> ProductsInCart { get; private set; } = new();
 
 
-		public void UpdateName(string name)
+		public void UpdateProduct(Product product)
 		{
-			Name = name;
-		}
-
-		public void UpdateDescription(string description)
-		{
-			Description = description;
-		}
-
-		public void UpdateType(ProductTypeEnum type)
-		{
-			Type = type;
-		}
-
-		public void UpdatePrice(decimal price)
-		{
-			Price = price;
-		}
-
-		public void UpdateQuantity(int quantity)
-		{
-			Quantity = quantity;
-		}
-
-		public void IncreaseQuantity(int quantity)
-		{
-			Quantity += quantity;
+			Name = product.Name;
+			Description= product.Description;
+			Type = product.Type;
+			Price = product.Price;
+			Quantity = product.Quantity;
+			CompanyId = product.CompanyId;
 		}
 
 		public void DecreaseQuantity(int quantity)

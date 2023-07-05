@@ -1,9 +1,8 @@
-﻿namespace Shop.API.ViewModels
+﻿namespace Shop.API.ViewModels.Company
 {
-	public class CompanyViewModel
+	public class AddCompanyViewModel
 	{
 		public string Name { get; set; }
-
 		public string Address { get; set; }
 	}
 }

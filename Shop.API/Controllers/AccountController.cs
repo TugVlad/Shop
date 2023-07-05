@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Shop.API.ViewModels;
+using Shop.API.ViewModels.Account;
 using Shop.Application.Services.Interfaces;
 using Shop.Core.Models;
 

@@ -21,9 +21,9 @@ namespace Shop.Application.Services.Implementations
 			return await _productRepository.AddProductAsync(product);
 		}
 
-		public async Task<Product> AddProductReviewAsync(int productId, string reviewMessage)
+		public async Task<Product> AddProductReviewAsync(Review review)
 		{
-			var product = await _productRepository.GetProductWithDependenciesByIdAsync(productId);
+			var product = await _productRepository.GetProductWithDependenciesByIdAsync(review.ProductId.Value);
 
 			if (product == null)
 			{
@@ -34,7 +34,6 @@ namespace Shop.Application.Services.Implementations
 
 			try
 			{
-				var review = new Review("title", reviewMessage, 5, product);
 				product.AddReview(review);
 				await _unitOfWork.SaveChangesAsync();
 
@@ -104,11 +103,7 @@ namespace Shop.Application.Services.Implementations
 
 			try
 			{
-				currentProduct.UpdateName(product.Name);
-				currentProduct.UpdateDescription(product.Description);
-				currentProduct.UpdateType(product.Type);
-				currentProduct.UpdatePrice(product.Price);
-				currentProduct.UpdateQuantity(product.Quantity);
+				currentProduct.UpdateProduct(product);
 
 				await _unitOfWork.SaveChangesAsync();
 

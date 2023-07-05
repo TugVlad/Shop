@@ -24,6 +24,11 @@ namespace Shop.Application.Services.Implementations
 		public async Task<Order> AddOrderAsync(Order newOrder)
 		{
 			var prodcutsInCart = await _productInCartRepository.GetProductsInCartForAccountIdAsync(newOrder.UserId);
+			if (prodcutsInCart.Count == 0)
+			{
+				return null;
+			}
+
 			var products = await _productRepository.GetProductsByIdsAsync(prodcutsInCart.Select(e => e.ProductId).ToList());
 			if (products.Count != prodcutsInCart.Count)
 			{

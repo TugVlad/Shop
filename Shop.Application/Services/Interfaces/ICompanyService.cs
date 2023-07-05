@@ -8,7 +8,7 @@ namespace Shop.Application.Services.Interfaces
 		Task<List<Company>> GetAllCompaniesWithReviewsAsync();
 		Task<Company> GetCompanyByIdAsync(int companyId);
 		Task<Company> AddCompanyAsync(Company company);
-		Task<Company> AddCompanyReviewAsync(int companyId, string reviewMessage);
+		Task<Company> AddCompanyReviewAsync(Review review);
 		Task<bool> DeleteCompanyAsync(int companyId);
 	}
 }

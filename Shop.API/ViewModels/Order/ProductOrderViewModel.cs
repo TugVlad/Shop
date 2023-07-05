@@ -1,6 +1,6 @@
-﻿namespace Shop.API.ViewModels
+﻿namespace Shop.API.ViewModels.Order
 {
-	public class ProductOrderDetailsViewModel
+	public class ProductOrderViewModel
 	{
 		public int ProductId { get; set; }
 		public int Quantity { get; set; }
