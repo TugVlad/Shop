@@ -13,9 +13,19 @@ namespace Shop.Application.Services.Implementations
 			_companyRepository = companyRepository;
 		}
 
-		public async Task<Company> AddCompanyAsync(Company company)
+		public async Task<Company> AddCompanyAsync(Company newCompany)
 		{
-			return await _companyRepository.AddCompanyAsync(company);
+			try
+			{
+				var company = await _companyRepository.AddCompanyAsync(newCompany);
+				await _unitOfWork.SaveChangesAsync();
+
+				return company;
+			}
+			catch (Exception)
+			{
+				return null;
+			}
 		}
 
 		public async Task<Company> AddCompanyReviewAsync(Review review)
@@ -27,21 +37,17 @@ namespace Shop.Application.Services.Implementations
 				return null;
 			}
 
-			await _unitOfWork.BeginTransaction();
-
 			try
 			{
 				company.AddReview(review);
 				await _unitOfWork.SaveChangesAsync();
 
-				await _unitOfWork.CommitTransaction();
+				return company;
 			}
 			catch (Exception)
 			{
-				await _unitOfWork.RollbackTransaction();
+				return null;
 			}
-
-			return company;
 		}
 
 		public async Task<bool> DeleteCompanyAsync(int companyId)
@@ -53,22 +59,18 @@ namespace Shop.Application.Services.Implementations
 				return false;
 			}
 
-			await _unitOfWork.BeginTransaction();
-
 			try
 			{
 				_companyRepository.DeleteCompanyAsync(company);
 				await _unitOfWork.SaveChangesAsync();
 
-				await _unitOfWork.CommitTransaction();
 				return true;
 			}
 			catch (Exception)
 			{
-				await _unitOfWork.RollbackTransaction();
+				return false;
 			}
 
-			return false;
 		}
 
 		public async Task<List<Company>> GetAllCompaniesAsync()

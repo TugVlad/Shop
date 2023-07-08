@@ -30,7 +30,7 @@ namespace Shop.API.Controllers
 		public async Task<ActionResult> AddAccount([FromBody] CreateAccountViewModel newAccount)
 		{
 			var account = await _accountService.AddAccountAsync(_mapper.Map<Account>(newAccount));
-			return Ok(_mapper.Map<AccountViewModel>(account));
+			return account == null ? Ok(_mapper.Map<AccountViewModel>(account)) : BadRequest("Could not add account!");
 		}
 	}
 }

@@ -31,7 +31,7 @@ namespace Shop.API.Controllers
 		public async Task<ActionResult> AddOrder([FromBody] AddOrderViewModel order)
 		{
 			var orderInfo = await _orderService.AddOrderAsync(_mapper.Map<Order>(order));
-			return Ok(_mapper.Map<OrderViewModel>(orderInfo));
+			return orderInfo == null ? Ok(_mapper.Map<OrderViewModel>(orderInfo)) : BadRequest("Could not add order!");
 		}
 
 		[HttpPost]

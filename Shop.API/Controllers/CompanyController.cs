@@ -45,7 +45,7 @@ namespace Shop.API.Controllers
 		public async Task<ActionResult> AddCompany([FromBody] AddCompanyViewModel newCompany)
 		{
 			var company = await _companyService.AddCompanyAsync(_mapper.Map<Company>(newCompany));
-			return Ok(_mapper.Map<CompanyViewModel>(company));
+			return company == null ? Ok(_mapper.Map<CompanyViewModel>(company)) : BadRequest("Company could not be added!");
 		}
 
 		[HttpPost]
@@ -53,7 +53,7 @@ namespace Shop.API.Controllers
 		public async Task<ActionResult> AddCompanyReview([FromBody] AddCompanyReviewViewModel review)
 		{
 			var company = await _companyService.AddCompanyReviewAsync(_mapper.Map<Review>(review));
-			return Ok(_mapper.Map<CompanyViewModel>(company));
+			return company == null ? Ok(_mapper.Map<CompanyViewModel>(company)) : BadRequest("Could not add company review!");
 		}
 
 		[HttpDelete("{id}")]

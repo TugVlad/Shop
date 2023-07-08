@@ -12,8 +12,6 @@ namespace Shop.Infrastructure.Repositories.Implementations
 		public async Task<Account> AddAccountAsync(Account account)
 		{
 			await _context.Accounts.AddAsync(account);
-			await SaveChangesAsync();
-
 			return account;
 		}
 

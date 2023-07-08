@@ -15,20 +15,17 @@ namespace Shop.Application.Services.Implementations
 
 		public async Task<Account> AddAccountAsync(Account newAccount)
 		{
-			await _unitOfWork.BeginTransaction();
 			try
 			{
 				var account = await _accountRepository.AddAccountAsync(newAccount);
+				await _unitOfWork.SaveChangesAsync();
 
-				await _unitOfWork.CommitTransaction();
 				return account;
 			}
 			catch (Exception)
 			{
-				await _unitOfWork.RollbackTransaction();
+				return null;
 			}
-
-			return null;
 		}
 
 		public async Task<List<Account>> GetAccountsAsync()

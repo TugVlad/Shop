@@ -18,10 +18,7 @@ namespace Shop.Data
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly(),
-				t => t.GetInterfaces().Any(i =>
-				i.IsGenericType &&
-				i.GetGenericTypeDefinition() == typeof(IEntityTypeConfiguration<>)));
+			modelBuilder.ApplyConfigurationsFromAssembly(typeof(ShopContext).Assembly);
 		}
 	}
 }

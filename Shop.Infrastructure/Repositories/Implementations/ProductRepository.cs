@@ -12,7 +12,6 @@ namespace Shop.Infrastructure.Repositories.Implementations
 		public async Task<Product> AddProductAsync(Product product)
 		{
 			await _context.Products.AddAsync(product);
-			await SaveChangesAsync();
 			return product;
 		}
 
