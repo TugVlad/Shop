@@ -44,10 +44,6 @@ namespace Shop.Application.Services.Implementations
 				products.ForEach(product =>
 				{
 					var quantity = newOrder.ProductOrders.FirstOrDefault(e => e.ProductId == product.Id)?.Quantity;
-					if (quantity == null || product.Quantity < quantity)
-					{
-						throw new Exception();
-					}
 					product.DecreaseQuantity(quantity.Value);
 				});
 

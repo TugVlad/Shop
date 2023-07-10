@@ -6,7 +6,7 @@ using Shop.Core.Models;
 
 namespace Shop.API.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/companies")]
 	[ApiController]
 	public class CompanyController : ControllerBase
 	{
@@ -27,7 +27,7 @@ namespace Shop.API.Controllers
 		}
 
 		[HttpGet]
-		[Route("companiesWithReviews")]
+		[Route("details")]
 		public async Task<ActionResult> GetAllCompaniesWithReviews()
 		{
 			var companies = await _companyService.GetAllCompaniesWithReviewsAsync();
@@ -38,29 +38,21 @@ namespace Shop.API.Controllers
 		public async Task<ActionResult> GetCompanyById(int id)
 		{
 			var company = await _companyService.GetCompanyByIdAsync(id);
-			return company != null ? Ok(_mapper.Map<CompanyViewModel>(company)) : NotFound();
+			return company != null ? Ok(_mapper.Map<CompanyViewModel>(company)) : NotFound("Couldn't find the company!");
 		}
 
 		[HttpPost]
 		public async Task<ActionResult> AddCompany([FromBody] AddCompanyViewModel newCompany)
 		{
 			var company = await _companyService.AddCompanyAsync(_mapper.Map<Company>(newCompany));
-			return company == null ? Ok(_mapper.Map<CompanyViewModel>(company)) : BadRequest("Company could not be added!");
-		}
-
-		[HttpPost]
-		[Route("addReview")]
-		public async Task<ActionResult> AddCompanyReview([FromBody] AddCompanyReviewViewModel review)
-		{
-			var company = await _companyService.AddCompanyReviewAsync(_mapper.Map<Review>(review));
-			return company == null ? Ok(_mapper.Map<CompanyViewModel>(company)) : BadRequest("Could not add company review!");
+			return company != null ? Ok(_mapper.Map<CompanyViewModel>(company)) : BadRequest("Company could not be added!");
 		}
 
 		[HttpDelete("{id}")]
 		public async Task<ActionResult> DeleteCompany(int id)
 		{
 			var response = await _companyService.DeleteCompanyAsync(id);
-			return response ? Ok("Company Deleted!") : NotFound();
+			return response ? Ok("Company Deleted!") : NotFound("Couldn't delete the company!");
 		}
 	}
 }

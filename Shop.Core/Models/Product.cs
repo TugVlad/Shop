@@ -44,6 +44,11 @@ namespace Shop.Core.Models
 
 		public void DecreaseQuantity(int quantity)
 		{
+			if (quantity == null || Quantity < quantity)
+			{
+				throw new Exception();
+			}
+
 			Quantity -= quantity;
 		}
 

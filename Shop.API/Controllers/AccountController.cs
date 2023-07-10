@@ -6,7 +6,7 @@ using Shop.Core.Models;
 
 namespace Shop.API.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/accounts")]
 	[ApiController]
 	public class AccountController : ControllerBase
 	{
@@ -30,7 +30,7 @@ namespace Shop.API.Controllers
 		public async Task<ActionResult> AddAccount([FromBody] CreateAccountViewModel newAccount)
 		{
 			var account = await _accountService.AddAccountAsync(_mapper.Map<Account>(newAccount));
-			return account == null ? Ok(_mapper.Map<AccountViewModel>(account)) : BadRequest("Could not add account!");
+			return account != null ? Ok(_mapper.Map<AccountViewModel>(account)) : BadRequest("Could not add account!");
 		}
 	}
 }

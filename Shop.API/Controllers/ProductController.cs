@@ -6,7 +6,7 @@ using Shop.Core.Models;
 
 namespace Shop.API.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/products")]
 	[ApiController]
 	public class ProductsController : ControllerBase
 	{
@@ -27,10 +27,9 @@ namespace Shop.API.Controllers
 		}
 
 		[HttpGet]
-		[Route("productsCompleteInformation")]
+		[Route("details")]
 		public async Task<ActionResult> GetAllProductsWithCompleteInformation()
 		{
-			//TODO -> Review 'Complete Information'
 			var products = await _productService.GetProductsCompleteInformationAsync();
 			return Ok(_mapper.Map<List<ProductViewModel>>(products));
 		}
@@ -39,21 +38,13 @@ namespace Shop.API.Controllers
 		public async Task<ActionResult> GetProductById(int id)
 		{
 			var product = await _productService.GetProductByIdAsync(id);
-			return product != null ? Ok(_mapper.Map<ProductViewModel>(product)) : NotFound();
+			return product != null ? Ok(_mapper.Map<ProductViewModel>(product)) : NotFound("Couldn't find the product!");
 		}
 
 		[HttpPost]
 		public async Task<ActionResult> AddProduct([FromBody] AddProductViewModel newProduct)
 		{
 			var product = await _productService.AddProductAsync(_mapper.Map<Product>(newProduct));
-			return Ok(_mapper.Map<ProductViewModel>(product));
-		}
-
-		[HttpPost]
-		[Route("addReview")]
-		public async Task<ActionResult> AddProductReview([FromBody] AddProductReviewViewModel review)
-		{
-			var product = await _productService.AddProductReviewAsync(_mapper.Map<Review>(review));
 			return Ok(_mapper.Map<ProductViewModel>(product));
 		}
 
@@ -64,7 +55,7 @@ namespace Shop.API.Controllers
 
 			if (product == null)
 			{
-				return NotFound();
+				return NotFound("Couldn't update the product!");
 			}
 
 			return Ok(_mapper.Map<ProductViewModel>(product));
@@ -74,15 +65,7 @@ namespace Shop.API.Controllers
 		public async Task<ActionResult> Delete(int id)
 		{
 			var response = await _productService.DeleteProductAsync(id);
-			return response ? Ok("Product Deleted!") : NotFound();
-		}
-
-		[HttpPost]
-		[Route("AddProductInCart")]
-		public async Task<ActionResult> AddProductInCart([FromBody] ProductInCartViewModel productInCart)
-		{
-			var response = await _productService.AddProductInCart(_mapper.Map<ProductInCart>(productInCart));
-			return response ? Ok("Product added in cart!") : NotFound();
+			return response ? Ok("Product Deleted!") : NotFound("Couldn't delete the product!");
 		}
 	}
 }

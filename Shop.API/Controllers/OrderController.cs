@@ -7,7 +7,7 @@ using Shop.Core.Models;
 
 namespace Shop.API.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/orders")]
 	[ApiController]
 	public class OrderController : ControllerBase
 	{
@@ -31,31 +31,15 @@ namespace Shop.API.Controllers
 		public async Task<ActionResult> AddOrder([FromBody] AddOrderViewModel order)
 		{
 			var orderInfo = await _orderService.AddOrderAsync(_mapper.Map<Order>(order));
-			return orderInfo == null ? Ok(_mapper.Map<OrderViewModel>(orderInfo)) : BadRequest("Could not add order!");
-		}
-
-		[HttpPost]
-		[Route("pay")]
-		public async Task<ActionResult> PayForOrder([FromBody] int orderId)
-		{
-			var result = await _orderService.PayForOrderAsync(orderId);
-			return result ? Ok("Payment succeeded") : NotFound();
-		}
-
-		[HttpPost]
-		[Route("complete-shippment")]
-		public async Task<ActionResult> ShippmentComplete([FromBody] int orderId)
-		{
-			var result = await _orderService.UpdateShippingForOrderAsync(orderId, OrderStatusEnum.ProductsDelivered);
-			return result ? Ok("Shippment finished") : NotFound();
+			return orderInfo != null ? Ok(_mapper.Map<OrderViewModel>(orderInfo)) : BadRequest("Could not add order!");
 		}
 
 		[HttpGet]
-		[Route("check-order/{orderId}")]
-		public async Task<ActionResult> CheckOrder([FromRoute] int orderId)
+		[Route("{orderId}")]
+		public async Task<ActionResult> GetOrder([FromRoute] int orderId)
 		{
 			var result = await _orderService.GetOrderInformation(orderId);
-			return result != null ? Ok(_mapper.Map<OrderViewModel>(result)) : NotFound();
+			return result != null ? Ok(_mapper.Map<OrderViewModel>(result)) : NotFound("Order not found!");
 		}
 	}
 }
