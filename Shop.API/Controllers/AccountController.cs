@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.API.ViewModels.Account;
 using Shop.Application.Services.Interfaces;
@@ -6,6 +7,7 @@ using Shop.Core.Models;
 
 namespace Shop.API.Controllers
 {
+	[Authorize(Policy = "IsAdmin")]
 	[Route("api/accounts")]
 	[ApiController]
 	public class AccountController : ControllerBase
