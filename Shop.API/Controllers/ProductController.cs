@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.API.ViewModels.Product;
 using Shop.Application.Services.Interfaces;
@@ -6,6 +7,7 @@ using Shop.Core.Models;
 
 namespace Shop.API.Controllers
 {
+	[Authorize]
 	[Route("api/products")]
 	[ApiController]
 	public class ProductsController : ControllerBase
@@ -19,6 +21,7 @@ namespace Shop.API.Controllers
 			_productService = productService;
 		}
 
+		[AllowAnonymous]
 		[HttpGet]
 		public async Task<ActionResult> GetAllProducts()
 		{
@@ -34,6 +37,7 @@ namespace Shop.API.Controllers
 			return Ok(_mapper.Map<List<ProductViewModel>>(products));
 		}
 
+		[AllowAnonymous]
 		[HttpGet("{id}")]
 		public async Task<ActionResult> GetProductById(int id)
 		{
@@ -41,6 +45,7 @@ namespace Shop.API.Controllers
 			return product != null ? Ok(_mapper.Map<ProductViewModel>(product)) : NotFound("Couldn't find the product!");
 		}
 
+		[Authorize(Policy = "IsAdmin")]
 		[HttpPost]
 		public async Task<ActionResult> AddProduct([FromBody] AddProductViewModel newProduct)
 		{
@@ -48,6 +53,7 @@ namespace Shop.API.Controllers
 			return Ok(_mapper.Map<ProductViewModel>(product));
 		}
 
+		[Authorize(Policy = "IsAdmin")]
 		[HttpPut("{id}")]
 		public async Task<ActionResult> UpdateProduct(int id, [FromBody] AddProductViewModel newProduct)
 		{
@@ -61,6 +67,7 @@ namespace Shop.API.Controllers
 			return Ok(_mapper.Map<ProductViewModel>(product));
 		}
 
+		[Authorize(Policy = "IsAdmin")]
 		[HttpDelete("{id}")]
 		public async Task<ActionResult> Delete(int id)
 		{

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.API.ViewModels.Product;
 using Shop.Application.Services.Interfaces;
@@ -6,6 +7,7 @@ using Shop.Core.Models;
 
 namespace Shop.API.Controllers
 {
+	[Authorize]
 	[Route("api/cart-products")]
 	[ApiController]
 	public class ProductInCartController : ControllerBase
@@ -14,7 +16,7 @@ namespace Shop.API.Controllers
 		private readonly IProductService _productService;
 
 		public ProductInCartController(IMapper mapper, IProductService productService)
-        {
+		{
 			_mapper = mapper;
 			_productService = productService;
 		}

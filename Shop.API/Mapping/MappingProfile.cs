@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Shop.API.ViewModels.Account;
 using Shop.API.ViewModels.Company;
+using Shop.API.ViewModels.Login;
 using Shop.API.ViewModels.Order;
 using Shop.API.ViewModels.Product;
 using Shop.Core.Models;
@@ -20,6 +21,7 @@ namespace Shop.API.Mapping
 
 			CreateMap<Account, CreateAccountViewModel>().ReverseMap();
 			CreateMap<Account, AccountViewModel>().ReverseMap();
+			CreateMap<Account, LoginViewModel>().ReverseMap();
 
 			CreateMap<Order, AddOrderViewModel>().ReverseMap();
 			CreateMap<Order, OrderViewModel>().ReverseMap();

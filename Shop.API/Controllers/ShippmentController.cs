@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shop.Application.Services.Interfaces;
 using Shop.Core.Enums;
 
 namespace Shop.API.Controllers
 {
+	[Authorize(Policy = "IsAdmin")]
 	[Route("api/shippments")]
 	[ApiController]
 	public class ShippmentController : ControllerBase

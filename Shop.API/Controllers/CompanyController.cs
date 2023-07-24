@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.API.ViewModels.Company;
 using Shop.Application.Services.Interfaces;
@@ -6,6 +7,7 @@ using Shop.Core.Models;
 
 namespace Shop.API.Controllers
 {
+	[Authorize]
 	[Route("api/companies")]
 	[ApiController]
 	public class CompanyController : ControllerBase
@@ -19,6 +21,7 @@ namespace Shop.API.Controllers
 			_companyService = companyService;
 		}
 
+		[AllowAnonymous]
 		[HttpGet]
 		public async Task<ActionResult> GetAllCompanies()
 		{
@@ -34,6 +37,7 @@ namespace Shop.API.Controllers
 			return Ok(_mapper.Map<List<CompanyViewModel>>(companies));
 		}
 
+		[AllowAnonymous]
 		[HttpGet("{id}")]
 		public async Task<ActionResult> GetCompanyById(int id)
 		{
@@ -41,6 +45,7 @@ namespace Shop.API.Controllers
 			return company != null ? Ok(_mapper.Map<CompanyViewModel>(company)) : NotFound("Couldn't find the company!");
 		}
 
+		[Authorize(Policy = "IsAdmin")]
 		[HttpPost]
 		public async Task<ActionResult> AddCompany([FromBody] AddCompanyViewModel newCompany)
 		{
@@ -48,6 +53,7 @@ namespace Shop.API.Controllers
 			return company != null ? Ok(_mapper.Map<CompanyViewModel>(company)) : BadRequest("Company could not be added!");
 		}
 
+		[Authorize(Policy = "IsAdmin")]
 		[HttpDelete("{id}")]
 		public async Task<ActionResult> DeleteCompany(int id)
 		{

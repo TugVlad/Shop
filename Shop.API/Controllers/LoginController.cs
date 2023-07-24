@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Shop.API.ViewModels.Login;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using Shop.Application.Services.Interfaces;
+using Shop.Core.Models;
 
 namespace Shop.API.Controllers
 {
@@ -11,47 +10,28 @@ namespace Shop.API.Controllers
 	[ApiController]
 	public class LoginController : ControllerBase
 	{
-		private const string TokenSecret = "ThisIsMyVeryLongLongLongSecurityKey";
-		private const string Issuer = "https://test.com";
-		private const string Audience = "https://ttest.com";
-		private static readonly TimeSpan TokenLifetime = TimeSpan.FromHours(8);
+		private readonly IConfiguration _configuration;
+		private readonly IMapper _mapper;
+		private readonly ILoginService _loginService;
+
+		public LoginController(IConfiguration configuration, IMapper mapper, ILoginService loginService)
+		{
+			_configuration = configuration;
+			_mapper = mapper;
+			_loginService = loginService;
+		}
 
 		[HttpPost]
-		public ActionResult GenerateToken([FromBody] LoginViewModel loginViewModel)
+		public async Task<ActionResult> GenerateToken([FromBody] LoginViewModel loginViewModel)
 		{
-			var tokenHandler = new JwtSecurityTokenHandler();
-			var key = Encoding.UTF8.GetBytes(TokenSecret);
+			var tokenDetails = new TokenDetails(
+				_configuration.GetValue<string>("SigningKey"),
+				_configuration.GetValue<string>("Issuer"),
+				_configuration.GetValue<string>("Audience"));
 
-			var claims = new List<Claim>
-			{
-				new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-				new(JwtRegisteredClaimNames.Sub, loginViewModel.Email),
-				new(JwtRegisteredClaimNames.Email, loginViewModel.Email),
-				new("userId", "1234")
-			};
+			var token = await _loginService.GetJWTToken(_mapper.Map<Account>(loginViewModel), tokenDetails);
 
-			if(loginViewModel.Email.Contains(".com"))
-			{
-				claims.Add(new("isAdmin", "true"));
-			}
-			else
-			{
-				claims.Add(new("isAdmin", "false"));
-			}
-
-			var tokenDescriptor = new SecurityTokenDescriptor
-			{
-				Subject = new ClaimsIdentity(claims),
-				Expires = DateTime.UtcNow.Add(TokenLifetime),
-				Issuer = Issuer,
-				Audience = Audience,
-				SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
-			};
-
-			var token = tokenHandler.CreateToken(tokenDescriptor);
-
-			var jwt = tokenHandler.WriteToken(token);
-			return Ok(jwt);
+			return token != null ? Ok(token) : BadRequest("Invalid credentials!");
 		}
 	}
 }

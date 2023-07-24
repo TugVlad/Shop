@@ -6,7 +6,9 @@ using Shop.Application.Repositories.Interfaces;
 using Shop.Application.Services.Implementations;
 using Shop.Application.Services.Interfaces;
 using Shop.Data;
+using Shop.Infrastructure;
 using Shop.Infrastructure.Repositories.Implementations;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -20,9 +22,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 	{
 		e.TokenValidationParameters = new TokenValidationParameters
 		{
-			ValidIssuer = "https://test.com",
-			ValidAudience = "https://ttest.com",
-			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ThisIsMyVeryLongLongLongSecurityKey")),
+			ValidIssuer = builder.Configuration.GetValue<string>("Issuer"),
+			ValidAudience = builder.Configuration.GetValue<string>("Audience"),
+			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("SigningKey"))),
 			ValidateIssuer = true,
 			ValidateAudience = true,
 			ValidateLifetime = true,
@@ -37,6 +39,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 //	e.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 //	e.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 //});
+
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 builder.Services.AddAuthorization(options =>
 {
@@ -71,7 +75,7 @@ builder.Services.AddSwaggerGen(option =>
 
 	option.AddSecurityRequirement(new OpenApiSecurityRequirement
 	{
-		{ 
+		{
 			new OpenApiSecurityScheme
 				{
 					Reference = new OpenApiReference
@@ -87,6 +91,7 @@ builder.Services.AddSwaggerGen(option =>
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<ITokenHelper, TokenHelper>();
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -97,6 +102,7 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IProductInCartRepository, ProductInCartRepository>();
+builder.Services.AddScoped<ILoginService, LoginService>();
 
 var app = builder.Build();
 

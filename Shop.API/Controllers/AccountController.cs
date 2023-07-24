@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Shop.API.ViewModels.Account;
 using Shop.Application.Services.Interfaces;
 using Shop.Core.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Shop.API.Controllers
 {
-	[Authorize(Policy = "IsAdmin")]
+	[Authorize]
 	[Route("api/accounts")]
 	[ApiController]
 	public class AccountController : ControllerBase
@@ -24,10 +26,13 @@ namespace Shop.API.Controllers
 		[HttpGet]
 		public async Task<ActionResult> GetAllAccount()
 		{
+			var currentUserId = User.FindFirst("sub")?.Value;
+
 			var result = await _accountService.GetAccountsAsync();
 			return Ok(_mapper.Map<List<AccountViewModel>>(result));
 		}
 
+		[Authorize(Policy = "IsAdmin")]
 		[HttpPost]
 		public async Task<ActionResult> AddAccount([FromBody] CreateAccountViewModel newAccount)
 		{

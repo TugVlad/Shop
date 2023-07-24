@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.API.ViewModels.Order;
 using Shop.Application.Services.Interfaces;
-using Shop.Core.Enums;
 using Shop.Core.Models;
 
 namespace Shop.API.Controllers
 {
+	[Authorize]
 	[Route("api/orders")]
 	[ApiController]
 	public class OrderController : ControllerBase
@@ -20,6 +21,7 @@ namespace Shop.API.Controllers
 			_orderService = orderService;
 		}
 
+		[Authorize(Policy = "IsAdmin")]
 		[HttpGet]
 		public async Task<ActionResult> GetAllOrders()
 		{

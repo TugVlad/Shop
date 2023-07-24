@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shop.Application.Services.Interfaces;
 
 namespace Shop.API.Controllers
 {
+	[Authorize]
 	[Route("api/payments")]
 	[ApiController]
 	public class PaymentController : ControllerBase

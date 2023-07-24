@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.API.ViewModels.Company;
 using Shop.API.ViewModels.Product;
@@ -7,6 +8,7 @@ using Shop.Core.Models;
 
 namespace Shop.API.Controllers
 {
+	[Authorize]
 	[Route("api/reviews")]
 	[ApiController]
 	public class ReviewController : ControllerBase
