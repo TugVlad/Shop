@@ -4,7 +4,7 @@ namespace Shop.Application.Repositories.Interfaces
 {
 	public interface IProductInCartRepository
 	{
-		Task AddProductInCartAsync(ProductInCart productInCart);
+		Task<ProductInCart> AddProductInCartAsync(ProductInCart productInCart);
 		Task<List<ProductInCart>> GetProductsInCartForAccountIdAsync(Guid accountId);
 		void DeleteProductsFromCart(List<ProductInCart> productsInCart);
 	}

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.API.ViewModels.Company;
 using Shop.Application.Services.Interfaces;
@@ -6,7 +7,8 @@ using Shop.Core.Models;
 
 namespace Shop.API.Controllers
 {
-	[Route("api/[controller]")]
+	[Authorize]
+	[Route("api/companies")]
 	[ApiController]
 	public class CompanyController : ControllerBase
 	{
@@ -19,6 +21,7 @@ namespace Shop.API.Controllers
 			_companyService = companyService;
 		}
 
+		[AllowAnonymous]
 		[HttpGet]
 		public async Task<ActionResult> GetAllCompanies()
 		{
@@ -27,40 +30,35 @@ namespace Shop.API.Controllers
 		}
 
 		[HttpGet]
-		[Route("companiesWithReviews")]
+		[Route("details")]
 		public async Task<ActionResult> GetAllCompaniesWithReviews()
 		{
 			var companies = await _companyService.GetAllCompaniesWithReviewsAsync();
 			return Ok(_mapper.Map<List<CompanyViewModel>>(companies));
 		}
 
+		[AllowAnonymous]
 		[HttpGet("{id}")]
 		public async Task<ActionResult> GetCompanyById(int id)
 		{
 			var company = await _companyService.GetCompanyByIdAsync(id);
-			return company != null ? Ok(_mapper.Map<CompanyViewModel>(company)) : NotFound();
+			return company != null ? Ok(_mapper.Map<CompanyViewModel>(company)) : NotFound("Couldn't find the company!");
 		}
 
+		[Authorize(Policy = "IsAdmin")]
 		[HttpPost]
 		public async Task<ActionResult> AddCompany([FromBody] AddCompanyViewModel newCompany)
 		{
 			var company = await _companyService.AddCompanyAsync(_mapper.Map<Company>(newCompany));
-			return Ok(_mapper.Map<CompanyViewModel>(company));
+			return company != null ? Ok(_mapper.Map<CompanyViewModel>(company)) : BadRequest("Company could not be added!");
 		}
 
-		[HttpPost]
-		[Route("addReview")]
-		public async Task<ActionResult> AddCompanyReview([FromBody] AddCompanyReviewViewModel review)
-		{
-			var company = await _companyService.AddCompanyReviewAsync(_mapper.Map<Review>(review));
-			return Ok(_mapper.Map<CompanyViewModel>(company));
-		}
-
+		[Authorize(Policy = "IsAdmin")]
 		[HttpDelete("{id}")]
 		public async Task<ActionResult> DeleteCompany(int id)
 		{
 			var response = await _companyService.DeleteCompanyAsync(id);
-			return response ? Ok("Company Deleted!") : NotFound();
+			return response ? Ok("Company Deleted!") : NotFound("Couldn't delete the company!");
 		}
 	}
 }

@@ -9,9 +9,10 @@ namespace Shop.Infrastructure.Repositories.Implementations
 	{
 		public ProductInCartRepository(ShopContext context) : base(context) { }
 
-		public async Task AddProductInCartAsync(ProductInCart productInCart)
+		public async Task<ProductInCart> AddProductInCartAsync(ProductInCart productInCart)
 		{
 			await _context.ProductsInCart.AddAsync(productInCart);
+			return productInCart;
 		}
 
 		public void DeleteProductsFromCart(List<ProductInCart> productsInCart)

@@ -16,9 +16,19 @@ namespace Shop.Application.Services.Implementations
 			_productInCartRepository = productInCartRepository;
 		}
 
-		public async Task<Product> AddProductAsync(Product product)
+		public async Task<Product> AddProductAsync(Product newProduct)
 		{
-			return await _productRepository.AddProductAsync(product);
+			try
+			{
+				var product = await _productRepository.AddProductAsync(newProduct);
+				await _unitOfWork.SaveChangesAsync();
+
+				return product;
+			}
+			catch (Exception)
+			{
+				return null;
+			}
 		}
 
 		public async Task<Product> AddProductReviewAsync(Review review)
@@ -30,22 +40,18 @@ namespace Shop.Application.Services.Implementations
 				return null;
 			}
 
-			await _unitOfWork.BeginTransaction();
-
 			try
 			{
 				product.AddReview(review);
 				await _unitOfWork.SaveChangesAsync();
 
-				await _unitOfWork.CommitTransaction();
 				return product;
 			}
 			catch (Exception)
 			{
-				await _unitOfWork.RollbackTransaction();
+				return null;
 			}
 
-			return null;
 		}
 
 		public async Task<bool> DeleteProductAsync(int productId)
@@ -57,22 +63,18 @@ namespace Shop.Application.Services.Implementations
 				return false;
 			}
 
-			await _unitOfWork.BeginTransaction();
-
 			try
 			{
 				_productRepository.DeleteProductAsync(product);
 				await _unitOfWork.SaveChangesAsync();
 
-				await _unitOfWork.CommitTransaction();
 				return true;
 			}
 			catch (Exception)
 			{
-				await _unitOfWork.RollbackTransaction();
+				return false;
 			}
 
-			return false;
 		}
 
 		public async Task<Product> GetProductByIdAsync(int productId)
@@ -99,23 +101,18 @@ namespace Shop.Application.Services.Implementations
 				return null;
 			}
 
-			await _unitOfWork.BeginTransaction();
-
 			try
 			{
 				currentProduct.UpdateProduct(product);
-
 				await _unitOfWork.SaveChangesAsync();
 
-				await _unitOfWork.CommitTransaction();
 				return currentProduct;
 			}
 			catch (Exception)
 			{
-				await _unitOfWork.RollbackTransaction();
+				return null;
 			}
 
-			return null;
 		}
 
 		public async Task<bool> CheckIfProductsExistAsync(List<int> productIds)
@@ -124,30 +121,30 @@ namespace Shop.Application.Services.Implementations
 			return count == productIds.Count;
 		}
 
-		public async Task<bool> AddProductInCart(ProductInCart productInCart)
+		public async Task<bool> AddProductInCart(ProductInCart newProductInCart)
 		{
-			var product = await _productRepository.GetProductByIdAsync(productInCart.ProductId);
-			if (product == null || product.Quantity < productInCart.Quantity)
+			var product = await _productRepository.GetProductByIdAsync(newProductInCart.ProductId);
+			if (product == null || product.Quantity < newProductInCart.Quantity)
 			{
 				return false;
 			}
 
-			await _unitOfWork.BeginTransaction();
-
 			try
 			{
-				await _productInCartRepository.AddProductInCartAsync(productInCart);
+				var productInCart = await _productInCartRepository.AddProductInCartAsync(newProductInCart);
+				if (productInCart == null)
+				{
+					return false;
+				}
+
 				await _unitOfWork.SaveChangesAsync();
 
-				await _unitOfWork.CommitTransaction();
 				return true;
 			}
 			catch (Exception)
 			{
-				await _unitOfWork.RollbackTransaction();
+				return false;
 			}
-
-			return false;
 		}
 	}
 }

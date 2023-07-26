@@ -13,12 +13,19 @@
 			Address = address;
 		}
 
+		public Account(string email, string password)
+		{
+			Email = email;
+			Password = password;
+		}
+
 		public Guid Id { get; private set; }
 		public string UserName { get; private set; }
 		public string Email { get; private set; }
 		public string Password { get; private set; }
 		public string? PhoneNumber { get; private set; }
 		public string Address { get; private set; }
+		public bool IsAdmin { get; private set; }
 		public List<Order> Orders { get; private set; } = new();
 		public List<ProductInCart> ProductsInCart { get; private set; } = new();
 

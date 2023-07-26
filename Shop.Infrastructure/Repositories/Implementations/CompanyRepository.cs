@@ -12,7 +12,6 @@ namespace Shop.Infrastructure.Repositories.Implementations
 		public async Task<Company> AddCompanyAsync(Company company)
 		{
 			await _context.Companies.AddAsync(company);
-			await SaveChangesAsync();
 			return company;
 		}
 

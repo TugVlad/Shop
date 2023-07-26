@@ -12,14 +12,17 @@ namespace Shop.Infrastructure.Repositories.Implementations
 		public async Task<Account> AddAccountAsync(Account account)
 		{
 			await _context.Accounts.AddAsync(account);
-			await SaveChangesAsync();
-
 			return account;
 		}
 
 		public async Task<List<Account>> GetAllAccountAsync()
 		{
 			return await _context.Accounts.ToListAsync();
+		}
+
+		public async Task<Account> GetAccountByCredentialsAsync(string email, string password)
+		{
+			return await _context.Accounts.FirstOrDefaultAsync(e => e.Email == email && e.Password == password);
 		}
 	}
 }

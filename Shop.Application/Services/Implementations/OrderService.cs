@@ -44,26 +44,20 @@ namespace Shop.Application.Services.Implementations
 				products.ForEach(product =>
 				{
 					var quantity = newOrder.ProductOrders.FirstOrDefault(e => e.ProductId == product.Id)?.Quantity;
-					if (quantity == null || product.Quantity < quantity)
-					{
-						throw new Exception();
-					}
 					product.DecreaseQuantity(quantity.Value);
 				});
-				await _unitOfWork.SaveChangesAsync();
 
 				_productInCartRepository.DeleteProductsFromCart(prodcutsInCart);
-				await _unitOfWork.SaveChangesAsync();
 
+				await _unitOfWork.SaveChangesAsync();
 				await _unitOfWork.CommitTransaction();
 				return order;
 			}
 			catch (Exception)
 			{
 				await _unitOfWork.RollbackTransaction();
+				return null;
 			}
-
-			return null;
 		}
 
 		public async Task<List<Order>> GetAllOrdersAsync()
@@ -80,22 +74,18 @@ namespace Shop.Application.Services.Implementations
 				return false;
 			}
 
-			await _unitOfWork.BeginTransaction();
-
 			try
 			{
 				order.UpdatePaymentStatus();
 				await _unitOfWork.SaveChangesAsync();
 
-				await _unitOfWork.CommitTransaction();
 				return true;
 			}
 			catch (Exception)
 			{
-				await _unitOfWork.RollbackTransaction();
+				return false;
 			}
 
-			return false;
 		}
 
 		public async Task<bool> UpdateShippingForOrderAsync(int orderId, OrderStatusEnum orderStatus)
@@ -107,22 +97,18 @@ namespace Shop.Application.Services.Implementations
 				return false;
 			}
 
-			await _unitOfWork.BeginTransaction();
-
 			try
 			{
 				order.UpdateStatus(orderStatus);
 				await _unitOfWork.SaveChangesAsync();
 
-				await _unitOfWork.CommitTransaction();
 				return true;
 			}
 			catch (Exception)
 			{
-				await _unitOfWork.RollbackTransaction();
+				return false;
 			}
 
-			return false;
 		}
 
 		public async Task<Order> GetOrderInformation(int orderId)

@@ -12,8 +12,6 @@ namespace Shop.Infrastructure.Repositories.Implementations
 		public async Task<Order> AddOrderAsync(Order order)
 		{
 			await _context.Orders.AddAsync(order);
-			await SaveChangesAsync();
-
 			return order;
 		}
 
