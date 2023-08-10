@@ -21,7 +21,7 @@ namespace Shop.API.Controllers
 			_loginService = loginService;
 		}
 
-		[HttpPost]
+		[HttpPost(Name = "Login")]
 		public async Task<ActionResult> GenerateToken([FromBody] LoginViewModel loginViewModel)
 		{
 			var tokenDetails = new TokenDetails(

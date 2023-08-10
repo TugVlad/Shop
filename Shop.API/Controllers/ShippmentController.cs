@@ -18,7 +18,7 @@ namespace Shop.API.Controllers
 		}
 
 		[HttpPost]
-		[Route("completion/order/{orderId}")]
+		[Route("completion/order/{orderId}", Name = "CompleteShippment")]
 		public async Task<ActionResult> ShippmentComplete([FromRoute] int orderId)
 		{
 			var result = await _orderService.UpdateShippingForOrderAsync(orderId, OrderStatusEnum.ProductsDelivered);

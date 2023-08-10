@@ -17,7 +17,7 @@ namespace Shop.API.Controllers
 		}
 
 		[HttpPost]
-		[Route("order/{orderId}")]
+		[Route("order/{orderId}", Name = "PayForOrderById")]
 		public async Task<ActionResult> PayForOrder([FromRoute] int orderId)
 		{
 			var result = await _orderService.PayForOrderAsync(orderId);

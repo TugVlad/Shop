@@ -25,7 +25,7 @@ namespace Shop.API.Controllers
 		}
 
 		[HttpPost]
-		[Route("product")]
+		[Route("product", Name = "AddProductReview")]
 		public async Task<ActionResult> AddProductReview([FromBody] AddProductReviewViewModel review)
 		{
 			var product = await _productService.AddProductReviewAsync(_mapper.Map<Review>(review));
@@ -33,7 +33,7 @@ namespace Shop.API.Controllers
 		}
 
 		[HttpPost]
-		[Route("company")]
+		[Route("company", Name = "AddCompanyReview")]
 		public async Task<ActionResult> AddCompanyReview([FromBody] AddCompanyReviewViewModel review)
 		{
 			var company = await _companyService.AddCompanyReviewAsync(_mapper.Map<Review>(review));
