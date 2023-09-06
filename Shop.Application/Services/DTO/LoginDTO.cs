@@ -1,6 +1,6 @@
-﻿namespace Shop.API.ViewModels.Login
+﻿namespace Shop.Application.Services.DTO
 {
-	public class LoginViewModel
+	public class LoginDTO
 	{
 		public string Username { get; set; }
 		public string Password { get; set; }

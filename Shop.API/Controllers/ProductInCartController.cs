@@ -7,7 +7,7 @@ using Shop.Core.Models;
 
 namespace Shop.API.Controllers
 {
-    [Authorize]
+	[Authorize(AuthenticationSchemes = "Bearer")]
 	[Route("api/cart")]
 	[ApiController]
 	public class ProductInCartController : ControllerBase

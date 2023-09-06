@@ -7,7 +7,7 @@ using Shop.Core.Models;
 
 namespace Shop.API.Controllers
 {
-	[Authorize]
+	[Authorize(AuthenticationSchemes = "Bearer")]
 	[Route("api/products")]
 	[ApiController]
 	public class ProductsController : ControllerBase

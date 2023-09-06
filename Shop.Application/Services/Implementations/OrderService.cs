@@ -35,7 +35,7 @@ namespace Shop.Application.Services.Implementations
 				return null;
 			}
 
-			await _unitOfWork.BeginTransaction();
+			await _unitOfWork.BeginTransactionAsync();
 			try
 			{
 				newOrder.UpdateProductOrdersFromCart(prodcutsInCart);
@@ -50,12 +50,12 @@ namespace Shop.Application.Services.Implementations
 				_productInCartRepository.DeleteProductsFromCart(prodcutsInCart);
 
 				await _unitOfWork.SaveChangesAsync();
-				await _unitOfWork.CommitTransaction();
+				await _unitOfWork.CommitTransactionAsync();
 				return order;
 			}
 			catch (Exception)
 			{
-				await _unitOfWork.RollbackTransaction();
+				await _unitOfWork.RollbackTransactionAsync();
 				return null;
 			}
 		}

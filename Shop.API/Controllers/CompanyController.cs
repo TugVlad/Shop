@@ -9,7 +9,7 @@ using Shop.Core.Models;
 
 namespace Shop.API.Controllers
 {
-	[Authorize]
+	[Authorize(AuthenticationSchemes = "Bearer")]
 	[Route("api/companies")]
 	[ApiController]
 	public class CompanyController : ControllerBase

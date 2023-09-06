@@ -8,7 +8,7 @@ using Shop.Core.Models;
 
 namespace Shop.API.Controllers
 {
-	[Authorize]
+	[Authorize(AuthenticationSchemes = "Bearer")]
 	[Route("api/reviews")]
 	[ApiController]
 	public class ReviewController : ControllerBase

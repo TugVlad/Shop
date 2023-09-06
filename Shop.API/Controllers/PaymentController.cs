@@ -4,7 +4,7 @@ using Shop.Application.Services.Interfaces;
 
 namespace Shop.API.Controllers
 {
-	[Authorize]
+	[Authorize(AuthenticationSchemes = "Bearer")]
 	[Route("api/payments")]
 	[ApiController]
 	public class PaymentController : ControllerBase

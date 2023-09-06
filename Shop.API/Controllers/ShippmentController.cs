@@ -5,7 +5,7 @@ using Shop.Core.Enums;
 
 namespace Shop.API.Controllers
 {
-	[Authorize(Policy = "IsAdmin")]
+	[Authorize(AuthenticationSchemes = "Bearer", Policy = "IsAdmin")]
 	[Route("api/shippments")]
 	[ApiController]
 	public class ShippmentController : ControllerBase

@@ -6,6 +6,6 @@ namespace Shop.Application.Repositories.Interfaces
 	{
 		Task<List<Account>> GetAllAccountAsync();
 		Task<Account> AddAccountAsync(Account account);
-		Task<Account> GetAccountByCredentialsAsync(string email, string password);
+		Task<Account> GetAccountByIdentityIdAsync(string identityId);
 	}
 }
