@@ -1,9 +1,10 @@
-﻿using Shop.Core.Models;
+﻿using Shop.Application.Services.DTO;
+using Shop.Core.Models;
 
 namespace Shop.Application.Services.Interfaces
 {
 	public interface ILoginService
 	{
-		Task<string> GetJWTToken(Account loginAccount, TokenDetails tokenDetails);
+		Task<string> GetJWTToken(LoginDTO loginAccount, TokenDetails tokenDetails);
 	}
 }

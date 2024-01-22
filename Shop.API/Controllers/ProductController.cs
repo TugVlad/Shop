@@ -7,7 +7,7 @@ using Shop.Core.Models;
 
 namespace Shop.API.Controllers
 {
-	[Authorize]
+	[Authorize(AuthenticationSchemes = "Bearer")]
 	[Route("api/products")]
 	[ApiController]
 	public class ProductsController : ControllerBase
@@ -22,7 +22,7 @@ namespace Shop.API.Controllers
 		}
 
 		[AllowAnonymous]
-		[HttpGet]
+		[HttpGet(Name = "GetAllProducts")]
 		public async Task<ActionResult> GetAllProducts()
 		{
 			var products = await _productService.GetProductsAsync();
@@ -30,7 +30,7 @@ namespace Shop.API.Controllers
 		}
 
 		[HttpGet]
-		[Route("details")]
+		[Route("details", Name = "GetAllProductsDetails")]
 		public async Task<ActionResult> GetAllProductsWithCompleteInformation()
 		{
 			var products = await _productService.GetProductsCompleteInformationAsync();
@@ -38,7 +38,7 @@ namespace Shop.API.Controllers
 		}
 
 		[AllowAnonymous]
-		[HttpGet("{id}")]
+		[HttpGet("{id}", Name = "GetProductById")]
 		public async Task<ActionResult> GetProductById(int id)
 		{
 			var product = await _productService.GetProductByIdAsync(id);
@@ -46,7 +46,7 @@ namespace Shop.API.Controllers
 		}
 
 		[Authorize(Policy = "IsAdmin")]
-		[HttpPost]
+		[HttpPost(Name = "AddProduct")]
 		public async Task<ActionResult> AddProduct([FromBody] AddProductViewModel newProduct)
 		{
 			var product = await _productService.AddProductAsync(_mapper.Map<Product>(newProduct));
@@ -54,7 +54,7 @@ namespace Shop.API.Controllers
 		}
 
 		[Authorize(Policy = "IsAdmin")]
-		[HttpPut("{id}")]
+		[HttpPut("{id}", Name = "UpdateProduct")]
 		public async Task<ActionResult> UpdateProduct(int id, [FromBody] AddProductViewModel newProduct)
 		{
 			var product = await _productService.UpdateProductAsync(id, _mapper.Map<Product>(newProduct));
@@ -68,7 +68,7 @@ namespace Shop.API.Controllers
 		}
 
 		[Authorize(Policy = "IsAdmin")]
-		[HttpDelete("{id}")]
+		[HttpDelete("{id}", Name = "DeleteProduct")]
 		public async Task<ActionResult> Delete(int id)
 		{
 			var response = await _productService.DeleteProductAsync(id);

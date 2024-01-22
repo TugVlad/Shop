@@ -20,9 +20,9 @@ namespace Shop.Infrastructure.Repositories.Implementations
 			return await _context.Accounts.ToListAsync();
 		}
 
-		public async Task<Account> GetAccountByCredentialsAsync(string email, string password)
+		public async Task<Account> GetAccountByIdentityIdAsync(string identityId)
 		{
-			return await _context.Accounts.FirstOrDefaultAsync(e => e.Email == email && e.Password == password);
+			return await _context.Accounts.FirstOrDefaultAsync(e => e.IdentityUserId == identityId);
 		}
 	}
 }

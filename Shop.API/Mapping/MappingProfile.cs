@@ -4,6 +4,8 @@ using Shop.API.ViewModels.Company;
 using Shop.API.ViewModels.Login;
 using Shop.API.ViewModels.Order;
 using Shop.API.ViewModels.Product;
+using Shop.API.ViewModels.Register;
+using Shop.Application.Services.DTO;
 using Shop.Core.Models;
 
 namespace Shop.API.Mapping
@@ -31,6 +33,9 @@ namespace Shop.API.Mapping
 			CreateMap<Review, AddCompanyReviewViewModel>().ReverseMap();
 			CreateMap<Review, ProductReviewViewModel>().ReverseMap();
 			CreateMap<Review, AddProductReviewViewModel>().ReverseMap();
+
+			CreateMap<RegisterViewModel, RegisterDTO>().ReverseMap();
+			CreateMap<LoginViewModel, LoginDTO>().ReverseMap();
 		}
 	}
 }

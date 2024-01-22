@@ -1,20 +1,20 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Shop.API.Services;
 using Shop.Application.Repositories.Interfaces;
 using Shop.Application.Services.Implementations;
 using Shop.Application.Services.Interfaces;
 using Shop.Data;
-using Shop.Infrastructure;
+using Shop.Infrastructure.Helpers;
 using Shop.Infrastructure.Repositories.Implementations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 //basic approach
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -49,11 +49,17 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddControllers()
 	.AddJsonOptions(e => e.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
 builder.Services.AddDbContext<ShopContext>(options =>
 {
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+	options.Password.RequiredLength = 5;
+}).AddEntityFrameworkStores<ShopContext>().AddDefaultTokenProviders();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
@@ -92,6 +98,8 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ITokenHelper, TokenHelper>();
+builder.Services.AddScoped<IIdentityHelper, IdentityHelper>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -103,10 +111,11 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IProductInCartRepository, ProductInCartRepository>();
 builder.Services.AddScoped<ILoginService, LoginService>();
+builder.Services.AddScoped<IHATEOASService, HATEOASService>();
+builder.Services.AddScoped<IRegisterService, RegisterService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
 	app.UseSwagger();

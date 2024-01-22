@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Shop.API.ViewModels.Login;
+using Shop.Application.Services.DTO;
 using Shop.Application.Services.Interfaces;
 using Shop.Core.Models;
 
@@ -21,7 +22,7 @@ namespace Shop.API.Controllers
 			_loginService = loginService;
 		}
 
-		[HttpPost]
+		[HttpPost(Name = "Login")]
 		public async Task<ActionResult> GenerateToken([FromBody] LoginViewModel loginViewModel)
 		{
 			var tokenDetails = new TokenDetails(
@@ -29,7 +30,7 @@ namespace Shop.API.Controllers
 				_configuration.GetValue<string>("Issuer"),
 				_configuration.GetValue<string>("Audience"));
 
-			var token = await _loginService.GetJWTToken(_mapper.Map<Account>(loginViewModel), tokenDetails);
+			var token = await _loginService.GetJWTToken(_mapper.Map<LoginDTO>(loginViewModel), tokenDetails);
 
 			return token != null ? Ok(token) : BadRequest("Invalid credentials!");
 		}

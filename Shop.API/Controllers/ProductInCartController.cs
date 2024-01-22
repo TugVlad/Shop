@@ -7,8 +7,8 @@ using Shop.Core.Models;
 
 namespace Shop.API.Controllers
 {
-	[Authorize]
-	[Route("api/cart-products")]
+	[Authorize(AuthenticationSchemes = "Bearer")]
+	[Route("api/cart")]
 	[ApiController]
 	public class ProductInCartController : ControllerBase
 	{
@@ -21,7 +21,7 @@ namespace Shop.API.Controllers
 			_productService = productService;
 		}
 
-		[HttpPost]
+		[HttpPost(Name = "AddProductInCart")]
 		public async Task<ActionResult> AddProductInCart([FromBody] ProductInCartViewModel productInCart)
 		{
 			var response = await _productService.AddProductInCart(_mapper.Map<ProductInCart>(productInCart));

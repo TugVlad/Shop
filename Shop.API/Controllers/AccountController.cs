@@ -4,12 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Shop.API.ViewModels.Account;
 using Shop.Application.Services.Interfaces;
 using Shop.Core.Models;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace Shop.API.Controllers
 {
-	[Authorize]
+	[Authorize(AuthenticationSchemes = "Bearer")]
 	[Route("api/accounts")]
 	[ApiController]
 	public class AccountController : ControllerBase

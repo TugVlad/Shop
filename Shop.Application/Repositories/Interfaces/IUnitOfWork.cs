@@ -3,8 +3,8 @@
 	public interface IUnitOfWork
 	{
 		Task SaveChangesAsync();
-		Task BeginTransaction();
-		Task CommitTransaction();
-		Task RollbackTransaction();
+		Task BeginTransactionAsync();
+		Task CommitTransactionAsync();
+		Task RollbackTransactionAsync();
 	}
 }

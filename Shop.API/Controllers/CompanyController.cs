@@ -1,64 +1,116 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shop.API.Services;
 using Shop.API.ViewModels.Company;
+using Shop.API.ViewModels.HATEOAS;
 using Shop.Application.Services.Interfaces;
 using Shop.Core.Models;
 
 namespace Shop.API.Controllers
 {
-	[Authorize]
+	[Authorize(AuthenticationSchemes = "Bearer")]
 	[Route("api/companies")]
 	[ApiController]
 	public class CompanyController : ControllerBase
 	{
 		private readonly ICompanyService _companyService;
 		private readonly IMapper _mapper;
+		private readonly IHATEOASService _hateoasService;
 
-		public CompanyController(IMapper mapper, ICompanyService companyService)
+		public CompanyController(IMapper mapper, ICompanyService companyService, IHATEOASService hateoasService)
 		{
 			_mapper = mapper;
 			_companyService = companyService;
+			_hateoasService = hateoasService;
 		}
 
 		[AllowAnonymous]
-		[HttpGet]
+		[HttpGet(Name = "GetAllCompanies")]
 		public async Task<ActionResult> GetAllCompanies()
 		{
 			var companies = await _companyService.GetAllCompaniesAsync();
-			return Ok(_mapper.Map<List<CompanyViewModel>>(companies));
+
+			var mappedResult = _mapper.Map<List<CompanyViewModel>>(companies);
+			var hateoasResult = new HATEOASExtension<List<CompanyViewModel>>(mappedResult);
+			hateoasResult.Links = _hateoasService.GetCompanyLinks(0);
+
+			return Ok(hateoasResult);
 		}
 
 		[HttpGet]
-		[Route("details")]
+		[Route("details", Name = "GetAllCompaniesDetails")]
 		public async Task<ActionResult> GetAllCompaniesWithReviews()
 		{
 			var companies = await _companyService.GetAllCompaniesWithReviewsAsync();
-			return Ok(_mapper.Map<List<CompanyViewModel>>(companies));
+
+			var mappedResult = _mapper.Map<List<CompanyViewModel>>(companies);
+			var hateoasResult = new HATEOASExtension<List<CompanyViewModel>>(mappedResult);
+			hateoasResult.Links = _hateoasService.GetCompanyLinks(0);
+
+			return Ok(hateoasResult);
 		}
 
 		[AllowAnonymous]
-		[HttpGet("{id}")]
+		[HttpGet("{id}", Name = "GetCompanyById")]
 		public async Task<ActionResult> GetCompanyById(int id)
 		{
 			var company = await _companyService.GetCompanyByIdAsync(id);
-			return company != null ? Ok(_mapper.Map<CompanyViewModel>(company)) : NotFound("Couldn't find the company!");
+
+			if (company == null)
+			{
+				return NotFound("Couldn't find the company!");
+			}
+
+			var mappedResult = _mapper.Map<CompanyViewModel>(company);
+			var hateoasResult = new HATEOASExtension<CompanyViewModel>(mappedResult);
+			hateoasResult.Links = _hateoasService.GetLinks(new List<LinkDetails>()
+			{
+				new LinkDetails("GetAllCompanies","GET"),
+				new LinkDetails("GetAllCompaniesDetails","GET"),
+				new LinkDetails("GetCompanyById","SELF",id),
+				new LinkDetails("AddCompany","POST"),
+				new LinkDetails("DeleteCompany","DELETE",id),
+				new LinkDetails("AddCompanyReview","POST"),
+
+			});
+
+			return Ok(hateoasResult);
 		}
 
 		[Authorize(Policy = "IsAdmin")]
-		[HttpPost]
+		[HttpPost(Name = "AddCompany")]
 		public async Task<ActionResult> AddCompany([FromBody] AddCompanyViewModel newCompany)
 		{
 			var company = await _companyService.AddCompanyAsync(_mapper.Map<Company>(newCompany));
-			return company != null ? Ok(_mapper.Map<CompanyViewModel>(company)) : BadRequest("Company could not be added!");
+
+			if (company == null)
+			{
+				return BadRequest("Company could not be added!");
+			}
+
+			var mappedResult = _mapper.Map<CompanyViewModel>(company);
+			var hateoasResult = new HATEOASExtension<CompanyViewModel>(mappedResult);
+			hateoasResult.Links = _hateoasService.GetCompanyLinks(0);
+
+			return Ok(hateoasResult);
 		}
 
 		[Authorize(Policy = "IsAdmin")]
-		[HttpDelete("{id}")]
+		[HttpDelete("{id}", Name = "DeleteCompany")]
 		public async Task<ActionResult> DeleteCompany(int id)
 		{
 			var response = await _companyService.DeleteCompanyAsync(id);
-			return response ? Ok("Company Deleted!") : NotFound("Couldn't delete the company!");
+
+			if (!response)
+			{
+				return NotFound("Couldn't delete the company!");
+			}
+
+			var hateoasResult = new HATEOASExtension<string>("Company Deleted!");
+			hateoasResult.Links = _hateoasService.GetCompanyLinks(id);
+
+			return Ok(hateoasResult);
 		}
 	}
 }
