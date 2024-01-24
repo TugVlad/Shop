@@ -29,7 +29,7 @@ namespace Shop.Core.Models
 
 		public List<ProductOrder> ProductOrders { get; private set; } = new();
 
-		public List<ProductInCart> ProductsInCart { get; private set; } = new();
+		public List<CartProduct> CartProducts { get; private set; } = new();
 
 
 		public void UpdateProduct(Product product)
@@ -44,7 +44,7 @@ namespace Shop.Core.Models
 
 		public void DecreaseQuantity(int quantity)
 		{
-			if (quantity == null || Quantity < quantity)
+			if (quantity == 0 || Quantity < quantity)
 			{
 				throw new Exception();
 			}

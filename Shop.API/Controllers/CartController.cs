@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shop.API.ViewModels.Cart;
 using Shop.API.ViewModels.Product;
 using Shop.Application.Services.Interfaces;
 using Shop.Core.Models;
@@ -10,22 +11,23 @@ namespace Shop.API.Controllers
 	[Authorize(AuthenticationSchemes = "Bearer")]
 	[Route("api/cart")]
 	[ApiController]
-	public class ProductInCartController : ControllerBase
+	public class CartController : ControllerBase
 	{
 		private readonly IMapper _mapper;
-		private readonly IProductService _productService;
+		private readonly ICartService _cartService;
 
-		public ProductInCartController(IMapper mapper, IProductService productService)
+		public CartController(IMapper mapper, ICartService cartService)
 		{
 			_mapper = mapper;
-			_productService = productService;
+			_cartService = cartService;
 		}
 
 		[HttpPost(Name = "AddProductInCart")]
 		public async Task<ActionResult> AddProductInCart([FromBody] ProductInCartViewModel productInCart)
 		{
-			var response = await _productService.AddProductInCart(_mapper.Map<ProductInCart>(productInCart));
-			return response ? Ok("Product added in cart!") : NotFound("Couldn't add the product in cart!");
+			var currentUserId = User.FindFirst("sub")?.Value;
+			var response = await _cartService.AddProductToCart(new Guid(currentUserId), _mapper.Map<CartProduct>(productInCart));
+			return response != null ? Ok(_mapper.Map<SimpleCartViewModel>(response)) : NotFound("Couldn't add the product in cart!");
 		}
 	}
 }

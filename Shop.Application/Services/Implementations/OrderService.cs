@@ -9,11 +9,11 @@ namespace Shop.Application.Services.Implementations
 	{
 		private readonly IOrderRepository _orderRepository;
 		private readonly IProductRepository _productRepository;
-		private readonly IProductInCartRepository _productInCartRepository;
+		private readonly ICartRepository _productInCartRepository;
 
 		public OrderService(IOrderRepository orderRepository,
 			IProductRepository productRepository,
-			IProductInCartRepository productInCartRepository,
+			ICartRepository productInCartRepository,
 			IUnitOfWork unitOfWork) : base(unitOfWork)
 		{
 			_orderRepository = orderRepository;
@@ -23,7 +23,7 @@ namespace Shop.Application.Services.Implementations
 
 		public async Task<Order> AddOrderAsync(Order newOrder)
 		{
-			var prodcutsInCart = await _productInCartRepository.GetProductsInCartForAccountIdAsync(newOrder.UserId);
+			var prodcutsInCart = await _productInCartRepository.GetCartProductsByAccountIdAsync(newOrder.UserId);
 			if (prodcutsInCart.Count == 0)
 			{
 				return null;

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Shop.Data;
 
@@ -11,9 +12,11 @@ using Shop.Data;
 namespace Shop.Infrastructure.Migrations
 {
     [DbContext(typeof(ShopContext))]
-    partial class ShopContextModelSnapshot : ModelSnapshot
+    [Migration("20240122105619_AddCart")]
+    partial class AddCart
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,7 +41,7 @@ namespace Shop.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -60,7 +63,7 @@ namespace Shop.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RoleClaims", (string)null);
+                    b.ToTable("RoleClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
@@ -112,7 +115,7 @@ namespace Shop.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -134,7 +137,7 @@ namespace Shop.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserClaims", (string)null);
+                    b.ToTable("UserClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -155,7 +158,7 @@ namespace Shop.Infrastructure.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("UserLogins", (string)null);
+                    b.ToTable("UserLogins");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -168,7 +171,7 @@ namespace Shop.Infrastructure.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("UserRoles", (string)null);
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -187,7 +190,7 @@ namespace Shop.Infrastructure.Migrations
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("UserTokens", (string)null);
+                    b.ToTable("UserTokens");
                 });
 
             modelBuilder.Entity("Shop.Core.Models.Account", b =>
@@ -232,7 +235,7 @@ namespace Shop.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Accounts", (string)null);
+                    b.ToTable("Accounts");
                 });
 
             modelBuilder.Entity("Shop.Core.Models.Cart", b =>
@@ -266,7 +269,7 @@ namespace Shop.Infrastructure.Migrations
                     b.HasIndex("AccountId")
                         .IsUnique();
 
-                    b.ToTable("Cart", (string)null);
+                    b.ToTable("Cart");
                 });
 
             modelBuilder.Entity("Shop.Core.Models.CartProduct", b =>
@@ -329,7 +332,7 @@ namespace Shop.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Companies", (string)null);
+                    b.ToTable("Companies");
                 });
 
             modelBuilder.Entity("Shop.Core.Models.Order", b =>
@@ -376,7 +379,7 @@ namespace Shop.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Shop.Core.Models.Product", b =>
@@ -424,7 +427,7 @@ namespace Shop.Infrastructure.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Shop.Core.Models.ProductOrder", b =>
@@ -442,7 +445,7 @@ namespace Shop.Infrastructure.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("ProductOrders", (string)null);
+                    b.ToTable("ProductOrders");
                 });
 
             modelBuilder.Entity("Shop.Core.Models.Review", b =>
@@ -488,7 +491,7 @@ namespace Shop.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Shop.Core.Models.Cart", b =>

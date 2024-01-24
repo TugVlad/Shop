@@ -22,7 +22,7 @@ namespace Shop.API.Controllers
 		}
 
 		[HttpGet]
-		public async Task<ActionResult> GetAllAccount()
+		public async Task<ActionResult> GetAllAccounts()
 		{
 			var currentUserId = User.FindFirst("sub")?.Value;
 

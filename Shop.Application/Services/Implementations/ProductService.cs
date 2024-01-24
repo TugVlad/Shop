@@ -7,9 +7,9 @@ namespace Shop.Application.Services.Implementations
 	public class ProductService : BaseService, IProductService
 	{
 		private readonly IProductRepository _productRepository;
-		private readonly IProductInCartRepository _productInCartRepository;
+		private readonly ICartRepository _productInCartRepository;
 
-		public ProductService(IProductRepository productRepository, IProductInCartRepository productInCartRepository, IUnitOfWork unitOfWork)
+		public ProductService(IProductRepository productRepository, ICartRepository productInCartRepository, IUnitOfWork unitOfWork)
 			: base(unitOfWork)
 		{
 			_productRepository = productRepository;
@@ -121,7 +121,7 @@ namespace Shop.Application.Services.Implementations
 			return count == productIds.Count;
 		}
 
-		public async Task<bool> AddProductInCart(ProductInCart newProductInCart)
+		public async Task<bool> AddProductInCart(CartProduct newProductInCart)
 		{
 			var product = await _productRepository.GetProductByIdAsync(newProductInCart.ProductId);
 			if (product == null || product.Quantity < newProductInCart.Quantity)

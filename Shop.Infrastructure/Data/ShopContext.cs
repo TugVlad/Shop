@@ -14,7 +14,8 @@ namespace Shop.Data
 		public DbSet<Account> Accounts { get; set; }
 		public DbSet<Order> Orders { get; set; }
 		public DbSet<ProductOrder> ProductOrders { get; set; }
-		public DbSet<ProductInCart> ProductsInCart { get; set; }
+		public DbSet<CartProduct> CartProducts { get; set; }
+		public DbSet<Cart> Cart { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Shop.API.ViewModels.Account;
+using Shop.API.ViewModels.Cart;
+using Shop.API.ViewModels.Cart.CartProducts;
 using Shop.API.ViewModels.Company;
 using Shop.API.ViewModels.Login;
 using Shop.API.ViewModels.Order;
@@ -18,7 +20,6 @@ namespace Shop.API.Mapping
 			CreateMap<Company, CompanyViewModel>().ReverseMap();
 
 			CreateMap<Product, AddProductViewModel>().ReverseMap();
-			CreateMap<ProductInCart, ProductInCartViewModel>().ReverseMap();
 			CreateMap<Product, ProductViewModel>().ReverseMap();
 
 			CreateMap<Account, CreateAccountViewModel>().ReverseMap();
@@ -27,6 +28,7 @@ namespace Shop.API.Mapping
 
 			CreateMap<Order, AddOrderViewModel>().ReverseMap();
 			CreateMap<Order, OrderViewModel>().ReverseMap();
+
 			CreateMap<ProductOrder, ProductOrderViewModel>().ReverseMap();
 
 			CreateMap<Review, CompanyReviewViewModel>().ReverseMap();
@@ -36,6 +38,11 @@ namespace Shop.API.Mapping
 
 			CreateMap<RegisterViewModel, RegisterDTO>().ReverseMap();
 			CreateMap<LoginViewModel, LoginDTO>().ReverseMap();
+
+			CreateMap<Cart, SimpleCartViewModel>().ReverseMap();
+
+			CreateMap<CartProduct, SimpleCartProductViewModel>().ReverseMap();
+			CreateMap<CartProduct, ProductInCartViewModel>().ReverseMap();
 		}
 	}
 }
