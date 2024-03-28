@@ -25,11 +25,16 @@ namespace Shop.Infrastructure.Repositories.Implementations
 			return _context.Cart.FirstOrDefaultAsync(e => e.AccountId == accountId);
 		}
 
+		public Task<Cart> GetCartWithProductsByAccountIdAsync(Guid accountId)
+		{
+			return _context.Cart.Include(e => e.CartProducts).FirstOrDefaultAsync(e => e.AccountId == accountId);
+		}
+
 		public Task<CartProduct> GetCartProductAsync(int cartId, int productId)
 		{
 			return _context.CartProducts
-				.Include(e=>e.Product)
-				.FirstOrDefaultAsync(e=>e.CartId == cartId && e.ProductId == productId);
+				.Include(e => e.Product)
+				.FirstOrDefaultAsync(e => e.CartId == cartId && e.ProductId == productId);
 		}
 
 		public async Task<List<CartProduct>> GetCartProductsByAccountIdAsync(Guid accountId)

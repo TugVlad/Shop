@@ -25,7 +25,7 @@ namespace Shop.API.Controllers
 			_hateoasService = hateoasService;
 		}
 
-		[Authorize(Policy = "IsAdmin")]
+		//[Authorize(Policy = "IsAdmin")]
 		[HttpGet(Name = "GetAllOrders")]
 		public async Task<ActionResult> GetAllOrders()
 		{
@@ -48,7 +48,8 @@ namespace Shop.API.Controllers
 		[HttpPost(Name = "AddOrder")]
 		public async Task<ActionResult> AddOrder([FromBody] AddOrderViewModel order)
 		{
-			var orderInfo = await _orderService.AddOrderAsync(_mapper.Map<Order>(order));
+			var currentUserId = User.FindFirst("sub")?.Value;
+			var orderInfo = await _orderService.AddOrderAsync(new Guid(currentUserId), _mapper.Map<Order>(order));
 
 			if (orderInfo == null)
 			{

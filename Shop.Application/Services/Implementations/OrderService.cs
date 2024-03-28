@@ -1,5 +1,7 @@
 ﻿using Shop.Application.Repositories.Interfaces;
 using Shop.Application.Services.Interfaces;
+using Shop.Application.Strategies.Implementation;
+using Shop.Application.Strategies.Interfaces;
 using Shop.Core.Enums;
 using Shop.Core.Models;
 
@@ -11,6 +13,8 @@ namespace Shop.Application.Services.Implementations
 		private readonly IProductRepository _productRepository;
 		private readonly ICartRepository _productInCartRepository;
 
+		private IPaymentStrategy _paymentStrategy;
+
 		public OrderService(IOrderRepository orderRepository,
 			IProductRepository productRepository,
 			ICartRepository productInCartRepository,
@@ -21,9 +25,9 @@ namespace Shop.Application.Services.Implementations
 			_productInCartRepository = productInCartRepository;
 		}
 
-		public async Task<Order> AddOrderAsync(Order newOrder)
+		public async Task<Order> AddOrderAsync(Guid userId, Order newOrder)
 		{
-			var prodcutsInCart = await _productInCartRepository.GetCartProductsByAccountIdAsync(newOrder.UserId);
+			var prodcutsInCart = await _productInCartRepository.GetCartProductsByAccountIdAsync(userId);
 			if (prodcutsInCart.Count == 0)
 			{
 				return null;
@@ -39,6 +43,7 @@ namespace Shop.Application.Services.Implementations
 			try
 			{
 				newOrder.UpdateProductOrdersFromCart(prodcutsInCart);
+				newOrder.UpdateUserId(userId);
 				var order = await _orderRepository.AddOrderAsync(newOrder);
 
 				products.ForEach(product =>
@@ -48,6 +53,7 @@ namespace Shop.Application.Services.Implementations
 				});
 
 				_productInCartRepository.DeleteProductsFromCart(prodcutsInCart);
+				//TODO -> reset cart value after adding order
 
 				await _unitOfWork.SaveChangesAsync();
 				await _unitOfWork.CommitTransactionAsync();
@@ -76,6 +82,9 @@ namespace Shop.Application.Services.Implementations
 
 			try
 			{
+				SetStrategy(order.PaymentMethod);
+				_paymentStrategy.Execute();
+
 				order.UpdatePaymentStatus();
 				await _unitOfWork.SaveChangesAsync();
 
@@ -114,6 +123,30 @@ namespace Shop.Application.Services.Implementations
 		public async Task<Order> GetOrderInformation(int orderId)
 		{
 			return await _orderRepository.GetOrderWithDependenciesByIdAsync(orderId);
+		}
+
+		private void SetStrategy(PaymentMethodEnum paymentMethod)
+		{
+			switch (paymentMethod)
+			{
+				case (PaymentMethodEnum.Card):
+					{
+						_paymentStrategy = new OnlineCardPaymentStrategy();
+					}
+					break;
+
+				case (PaymentMethodEnum.GiftCard):
+					{
+						_paymentStrategy = new GiftCardPaymentStrategy();
+					}
+					break;
+
+				case (PaymentMethodEnum.CashOnDelivery):
+					{
+						_paymentStrategy = new CashOnDeliveryPaymentStrategy();
+					}
+					break;
+			}
 		}
 	}
 }

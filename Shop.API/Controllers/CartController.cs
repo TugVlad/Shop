@@ -29,5 +29,13 @@ namespace Shop.API.Controllers
 			var response = await _cartService.AddProductToCart(new Guid(currentUserId), _mapper.Map<CartProduct>(productInCart));
 			return response != null ? Ok(_mapper.Map<SimpleCartViewModel>(response)) : NotFound("Couldn't add the product in cart!");
 		}
+
+		[HttpGet(Name = "ShowCart")]
+		public async Task<ActionResult> GetProductsFromCart()
+		{
+			var currentUserId = User.FindFirst("sub")?.Value;
+			var response = await _cartService.GetCartWithProductsInformation(new Guid(currentUserId));
+			return response != null ? Ok(_mapper.Map<SimpleCartViewModel>(response)) : NotFound("Cart not found!");
+		}
 	}
 }

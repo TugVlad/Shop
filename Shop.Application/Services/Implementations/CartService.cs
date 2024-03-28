@@ -33,5 +33,15 @@ namespace Shop.Application.Services.Implementations
 
 			return cart;
 		}
+
+		public async Task<Cart> GetCartInformation(Guid accountId)
+		{
+			return await _cartRepository.GetCartByAccountIdAsync(accountId);
+		}
+
+		public async Task<Cart> GetCartWithProductsInformation(Guid accountId)
+		{
+			return await _cartRepository.GetCartWithProductsByAccountIdAsync(accountId);
+		}
 	}
 }

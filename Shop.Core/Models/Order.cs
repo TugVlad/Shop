@@ -50,5 +50,10 @@ namespace Shop.Core.Models
 			OrderStatus = orderStatus;
 			UpdateBaseInfo();
 		}
+
+		public void UpdateUserId(Guid userId)
+		{
+			UserId = userId;
+		}
 	}
 }

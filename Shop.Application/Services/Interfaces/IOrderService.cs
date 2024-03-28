@@ -6,7 +6,7 @@ namespace Shop.Application.Services.Interfaces
 	public interface IOrderService
 	{
 		Task<List<Order>> GetAllOrdersAsync();
-		Task<Order> AddOrderAsync(Order order);
+		Task<Order> AddOrderAsync(Guid userId, Order order);
 		Task<bool> PayForOrderAsync(int orderId);
 		Task<bool> UpdateShippingForOrderAsync(int orderId, OrderStatusEnum orderStatus);
 		Task<Order> GetOrderInformation(int orderId);

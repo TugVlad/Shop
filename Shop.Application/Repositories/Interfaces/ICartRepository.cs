@@ -9,5 +9,6 @@ namespace Shop.Application.Repositories.Interfaces
 		void DeleteProductsFromCart(List<CartProduct> productsInCart);
 		Task<CartProduct> GetCartProductAsync(int cartId, int productId);
 		Task<Cart> GetCartByAccountIdAsync(Guid accountId);
+		Task<Cart> GetCartWithProductsByAccountIdAsync(Guid accountId);
 	}
 }
